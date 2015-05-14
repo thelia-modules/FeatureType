@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="feature_type_module_config" path="/admin/module/FeatureType" methods="GET">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::viewAllAction</default>
+    </route>
+
+    <route id="feature_type_view_all" path="/admin/feature-type" methods="GET">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::viewAllAction</default>
+    </route>
+
+    <route id="feature_type_create" path="/admin/feature-type" methods="POST">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::createAction</default>
+    </route>
+
+    <route id="feature_type_view" path="/admin/feature-type/{id}" methods="GET">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::viewAction</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <route id="feature_type_copy" path="/admin/feature-type/{id}/{method}" methods="GET">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::copyAction</default>
+        <requirement key="id">\d+</requirement>
+        <requirement key="method">_copy</requirement>
+    </route>
+
+    <route id="feature_type_update" path="/admin/feature-type/{id}" methods="POST">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::updateAction</default>
+        <requirement key="id">\d+</requirement>
+    </route>
+
+    <route id="feature_type_delete" path="/admin/feature-type/{id}/{method}" methods="POST">
+        <default key="_controller">FeatureType\Controller\FeatureTypeController::deleteAction</default>
+        <requirement key="id">\d+</requirement>
+        <requirement key="method">_delete</requirement>
+    </route>
+
+    <route id="feature_type_associate" path="/admin/feature-type/{feature_type_id}/associate/{feature_id}" methods="POST">
+        <default key="_controller">FeatureType\Controller\FeatureTypeFeatureController::associateAction</default>
+        <requirement key="feature_type_id">\d+</requirement>
+        <requirement key="feature_id">\d+</requirement>
+    </route>
+
+    <route id="feature_type_dissociate" path="/admin/feature-type/{feature_type_id}/dissociate/{feature_id}" methods="POST">
+        <default key="_controller">FeatureType\Controller\FeatureTypeFeatureController::dissociateAction</default>
+        <requirement key="feature_type_id">\d+</requirement>
+        <requirement key="feature_id">\d+</requirement>
+    </route>
+
+    <route id="feature_type_meta_update" path="/admin/feature/{feature_id}/feature-av/meta" methods="POST">
+        <default key="_controller">FeatureType\Controller\FeatureTypeFeatureAvController::updateMetaAction</default>
+        <requirement key="feature_id">\d+</requirement>
+    </route>
+
+</routes>

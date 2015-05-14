@@ -1,0 +1,39 @@
+{$prefix = 'atuf-'}
+{$feature_type_id = null}
+
+{form name="feature_type.update"}
+<form method="POST" class="js-form-edit" action="{url path="/admin/feature-type"}">
+    {form_hidden_fields form=$form}
+
+    {form_field form=$form field='success_url'}
+        <input type="hidden" name="{$name}" value="{url path='/admin/feature-type'}" />
+    {/form_field}
+
+    {form_field form=$form field='id'}
+        <input type="hidden" name="{$name}" value="{$value}" required />
+        {$feature_type_id = $value}
+    {/form_field}
+
+    <div class="modal fade js-modal-edit {if $form_error}open{/if}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong class="modal-title text-uppercase">{intl l="Update feature type" d="featuretype"}</strong>
+                </div>
+                {include file="feature-type/include/form-generic.html"}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        {intl l="Close action" d="featuretype"}
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-ok"></span>
+                        {intl l="Update action" d="featuretype"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{/form}

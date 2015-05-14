@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config xmlns="http://thelia.net/schema/dic/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
+
+    <loops>
+        <loop name="feature_type" class="FeatureType\Loop\FeatureTypeLoop" />
+        <loop name="feature_extend_feature_type" class="FeatureType\Loop\FeatureExtendLoop" />
+        <loop name="feature_availability_extend_feature_type" class="FeatureType\Loop\FeatureAvailabilityExtendLoop" />
+    </loops>
+
+    <forms>
+        <form name="feature_type.associate" class="FeatureType\Form\FeatureTypeForm" />
+        <form name="feature_type.dissociate" class="FeatureType\Form\FeatureTypeForm" />
+        <form name="feature_type.delete" class="FeatureType\Form\FeatureTypeForm" />
+        <form name="feature_type.create" class="FeatureType\Form\FeatureTypeCreateForm" />
+        <form name="feature_type.update" class="FeatureType\Form\FeatureTypeUpdateForm" />
+        <form name="feature_type_av_meta.update" class="FeatureType\Form\FeatureTypeAvMetaUpdateForm" />
+    </forms>
+
+    <hooks>
+        <hook id="feature.type.edit" class="FeatureType\Hook\FeatureEditHook" scope="request">
+            <tag name="hook.event_listener" event="feature-edit.bottom" type="back" method="onFeatureEditBottom"/>
+            <tag name="hook.event_listener" event="feature.edit-js" type="back" method="onFeatureEditJs"/>
+            <argument type="service" id="service_container" />
+        </hook>
+        <hook id="feature.type.configuration" class="FeatureType\Hook\ConfigurationHook" scope="request">
+            <tag name="hook.event_listener" event="configuration.catalog-top" type="back" method="onConfigurationCatalogTop"/>
+        </hook>
+    </hooks>
+
+    <services>
+        <service id="feature.type.action" class="FeatureType\Action\FeatureTypeAction" scope="request">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+
+</config>

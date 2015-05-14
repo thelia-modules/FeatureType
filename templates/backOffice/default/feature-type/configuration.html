@@ -1,0 +1,195 @@
+{extends file="admin-layout.tpl"}
+
+{block name="no-return-functions"}
+  {$admin_current_location = 'modules'}
+{/block}
+
+{block name="page-title"}{intl l='Modules'}{/block}
+
+{block name="check-resource"}admin.module{/block}
+{block name="check-access"}view{/block}
+
+{block name="main-content"}
+  <div class="edit-module">
+    <div id="wrapper" class="container">
+      <ul class="breadcrumb">
+        <li><a href="{url path='/admin/home'}">{intl l="Home"}</a></li>
+        <li><a href="{url path='/admin/configuration'}">{intl l="Configuration"}</a></li>
+        <li>{intl l="Features types" d="featuretype"}</li>
+      </ul>
+
+      {hook name="feature-type.configuration-top"}
+
+      <div class="row" id="module-feature-type">
+        <div class="col-md-12 general-block-decorator">
+            <button class="btn btn-default pull-right js-popover"
+                    title="{intl l="Help !!!" d="featuretype"}"
+                    data-placement="left"
+                    data-html="true"
+                    data-content="{intl l="To ask for help" d="featuretype"}
+                    </br> <a target='_blank' href='https://github.com/thelia-modules/FeatureType/issues'>Github</a>
+                    , <a target='_blank' href='http://thelia.net/forum/'>Thelia forum</a>
+                    "
+                    >
+              <span class="glyphicon glyphicon-info-sign"></span>
+            </button>
+            <div class="title title-without-tabs">
+              {intl l="Features types" d="featuretype"}
+            </div>
+            <div class="form-container">
+              <table class="table table-striped">
+                <colgroup>
+                  <col />
+                  <col />
+                  <col width="20%" />
+                  <col width="20%" />
+                  <col width="15%" />
+                  <col width="35%" />
+                </colgroup>
+                <thead>
+                <tr>
+                  <th>
+                    {intl l="ID"}
+                  </th>
+                  <th>
+                    {intl l="Slug" d="featuretype"}
+                  </th>
+                  <th>
+                    {intl l="Title"}
+                  </th>
+                  <th>
+                    {intl l="Description"}
+                  </th>
+                  <th>
+                    {intl l="Used by" d="featuretype"}
+                  </th>
+                  <th>
+                    {intl l="Action" d="featuretype"}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                {loop type="feature_type" name="feature_type"}
+                  <tr>
+                    <td>
+                      {$ID}
+                    </td>
+                    <td>
+                      {$SLUG}
+                    </td>
+                    <td>
+                      {$TITLE}
+                    </td>
+                    <td>
+                      {$DESCRIPTION}
+                    </td>
+                    <td>
+                      {ifloop rel="feature_feature_type"}
+                      {loop type="feature_extend_feature_type" name="feature_feature_type" feature_type_id=$ID}
+                        <a href="{url path="/admin/configuration/features/update" feature_id=$ID}">{$TITLE}</a>
+                        <br/>
+                      {/loop}
+                      {/ifloop}
+                      {elseloop rel="feature_feature_type"}
+                      {intl l="No" d="featuretype"}
+                      {/elseloop}
+                    </td>
+                    <td>
+                      {hook name="feature-type.list-action" feature_type_id=$ID}
+                      <button class="btn btn-primary btn-sm js-action-copy" data-action="{url path="/admin/feature-type/$ID/_copy"}">
+                        <span class="glyphicon glyphicon-file"></span>
+                        {intl l="Copy action" d="featuretype"}
+                      </button>
+                      <button class="btn btn-info btn-sm js-action-edit" data-action="{url path="/admin/feature-type/$ID"}">
+                        <span class="glyphicon glyphicon-cog"></span>
+                        {intl l="Edit action" d="featuretype"}
+                      </button>
+                      <button class="btn btn-danger btn-sm js-action-delete" data-action="{url path="/admin/feature-type/$ID/_delete"}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        {intl l="Delete action" d="featuretype"}
+                      </button>
+                    </td>
+                  </tr>
+                {/loop}
+                {elseloop rel="feature_type"}
+                  <tr>
+                    <td colspan="10">
+                      <div class="alert alert-info">
+                        {intl l="No feature type in database" d="featuretype"}
+                      </div>
+                    </td>
+                  </tr>
+                {/elseloop}
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="10" class="text-center">
+                    <button type="button" class="btn btn-success js-action-create">
+                      <span class="glyphicon glyphicon-plus"></span>
+                      {intl l="Create action" d="featuretype"}
+                    </button>
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+        </div>
+
+        {include file="feature-type/include/form-create.html"}
+        {include file="feature-type/include/form-update.html"}
+
+        <!-- Modal -->
+        {form name="feature_type.delete"}
+          <form method="POST" class="js-form-delete" action="">
+            {form_hidden_fields form=$form}
+
+            {form_field form=$form field='success_url'}
+              <input type="hidden" name="{$name}" value="{url path='/admin/feature-type'}" />
+            {/form_field}
+
+            <div class="modal fade js-modal-delete {if $form_error}open{/if}" tabindex="-1" role="dialog" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong class="modal-title text-uppercase">{intl l="Delete feature type" d="featuretype"}</strong>
+                  </div>
+                  <div class="modal-body">
+                    {if $form_error}
+                      <div class="alert alert-danger">{$form_error_message}</div>
+                    {/if}
+                    {intl l="Are you sure you want to delete this feature type ?" d="featuretype"}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                      <span class="glyphicon glyphicon-remove"></span>
+                      {intl l="Close action" d="featuretype"}
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                      <span class="glyphicon glyphicon-ok"></span>
+                      {intl l="Delete action" d="featuretype"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        {/form}
+      </div>
+
+      {hook name="feature-type.configuration-bottom"}
+
+      {hook name="module.configuration" location="module_configuration"  modulecode="FeatureType"}
+
+    </div>
+  </div>
+{/block}
+{block name="javascript-initialization"}
+  {include file="feature-type/configuration-js.html"}
+{/block}
+
+{block name="javascript-last-call"}
+  {hook name="module.config-js" location="module-config-js" modulecode="FeatureType"}
+
+  {hook name="wysiwyg.js" location="wysiwyg-module-config-js" }
+{/block}
