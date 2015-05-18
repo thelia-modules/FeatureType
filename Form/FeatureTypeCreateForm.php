@@ -126,6 +126,7 @@ class FeatureTypeCreateForm extends FeatureTypeForm
                 'empty_value' => 'text',
                 'choices'   => array(
                     'text'   => Translator::getInstance()->trans('Type text', array(), FeatureType::MODULE_DOMAIN),
+                    'textarea'   => Translator::getInstance()->trans('Type textarea', array(), FeatureType::MODULE_DOMAIN),
                     'color'   => Translator::getInstance()->trans('Type color', array(), FeatureType::MODULE_DOMAIN),
                     'number'   => Translator::getInstance()->trans('Type number', array(), FeatureType::MODULE_DOMAIN),
                     'range'   => Translator::getInstance()->trans('Type range', array(), FeatureType::MODULE_DOMAIN),
