@@ -36,15 +36,16 @@ class FeatureTypeController extends BaseAdminController
     protected $objectName = 'Feature type';
 
     /**
+     * @param array $params
      * @return Response
      */
-    public function viewAllAction()
+    public function viewAllAction($params = array())
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::VIEW)) {
             return $response;
         }
 
-        return $this->render("feature-type/configuration");
+        return $this->render("feature-type/configuration", $params);
     }
 
     /**
@@ -90,14 +91,16 @@ class FeatureTypeController extends BaseAdminController
             'step' => $featureType->getStep(),
             'title' => $title,
             'description' => $description
-        ))->setError(true);
+        ));
 
         $this->getParserContext()->addForm($form);
 
         if ($this->getRequest()->isXmlHttpRequest()) {
             return $this->render("feature-type/include/form-update");
         } else {
-            return self::viewAllAction();
+            return self::viewAllAction(array(
+                'feature_type_id' => $id
+            ));
         }
     }
 
@@ -164,7 +167,9 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return self::viewAllAction();
+            return self::viewAllAction(array(
+                'feature_type_id' => $id
+            ));
         }
     }
 
