@@ -1,30 +1,12 @@
 <script type="text/javascript">
+  "use strict";
   (function($, $module){
 
     /*****************************************/
-    /************ Module global **************/
-    /*****************************************/
-
-    $module.find('.js-popover').popover();
-
-    function popoverHide() {
-      $module.find('.js-popover').popover('hide');
-    }
-
-    $module.on('submit', 'form', function(event){
-      $(this).find('button[type=submit]').html('<span class="glyphicon glyphicon-refresh"></span> {intl l="Please wait ..." d="featuretype"}');
-      $module.find('button').attr('disabled', true);
-    });
-
-    $module.find('.modal.open').modal('show');
-
-    /*****************************************/
-    /********** Feature create *************/
+    /************ Feature create *************/
     /*****************************************/
 
     $module.on('click', '.js-action-create', function(event){
-      popoverHide();
-
       $module.find('.js-modal-create').modal('show');
       $module.find('#atcf-has_feature_av_value').trigger('change');
       $module.find('#atcf-input_type').trigger('change');
@@ -80,12 +62,10 @@
     });
 
     /*****************************************/
-    /************ Feature edit *************/
+    /************** Feature edit *************/
     /*****************************************/
 
-    $module.on('click', '.js-action-edit', function(event){
-      popoverHide();
-
+    $module.on('click', '.js-action-edit', function(){
       $module.find('.js-form-edit').attr('action', $(this).data('action'));
       if (typeof this.token === 'undefined' || this.token === true) {
         this.token = false;
@@ -98,13 +78,11 @@
           success: function (html) {
             $module.find('.js-form-edit').html($(html).html());
             $module.find('.js-modal-edit').modal('show');
-            $module.find('#atuf-has_feature_av_value').trigger('change');
-            $module.find('#atuf-input_type').trigger('change');
             this.target.token = true;
           },
-          error: function (error) {
+          error: function (xhr, ajaxOptions, thrownError) {
             this.target.token = true;
-            alert(error);
+            alert(thrownError);
           }
         });
       }
@@ -115,6 +93,12 @@
       $(this).parents('.nav-tabs').next('.tab-content')
               .find('.tab-pane').removeClass('active')
               .eq($(this).parent('li').index()).addClass('active');
+    });
+
+    // event listener modal open
+    $module.on('show.bs.modal', '.js-modal-edit', function(){
+      $module.find('#atuf-has_feature_av_value').trigger('change');
+      $module.find('#atuf-input_type').trigger('change');
     });
 
     $module.on('change', '#atuf-has_feature_av_value', function(){
@@ -159,12 +143,10 @@
       }
     });
     /*****************************************/
-    /************ Feature copy *************/
+    /************** Feature copy *************/
     /*****************************************/
 
-    $module.on('click', '.js-action-copy', function(event){
-      popoverHide();
-
+    $module.on('click', '.js-action-copy', function(){
       if (typeof this.token === 'undefined' || this.token === true) {
         this.token = false;
 
@@ -180,24 +162,39 @@
             $module.find('#atcf-input_type').trigger('change');
             this.target.token = true;
           },
-          error: function (error) {
+          error: function (xhr, ajaxOptions, thrownError) {
             this.target.token = true;
-            alert(error);
+            alert(thrownError);
           }
         });
       }
     });
 
     /*****************************************/
-    /*********** Feature delete ************/
+    /************ Feature delete *************/
     /*****************************************/
 
-    $module.on('click', '.js-action-delete', function(event){
-      popoverHide();
-
+    $module.on('click', '.js-action-delete', function(){
       $module.find('.js-modal-delete').modal('show');
       $module.find('.js-form-delete').attr('action', $(this).data('action'));
     });
+
+    /*****************************************/
+    /************** Module init **************/
+    /*****************************************/
+
+    $module.find('.js-popover').popover();
+
+    $module.on('show.bs.modal', '.modal', function(){
+      $module.find('.js-popover').popover('hide');
+    });
+
+    $module.on('submit', 'form', function(){
+      $(this).find('button[type=submit]').html('<span class="glyphicon glyphicon-refresh"></span> {intl l="Please wait ..." d="featuretype"}');
+      $module.find('button').attr('disabled', true);
+    });
+
+    $module.find('.modal.open').modal('show');
 
   }(jQuery, jQuery("#module-feature-type")));
 </script>
