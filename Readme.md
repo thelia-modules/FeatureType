@@ -169,3 +169,29 @@ Extends the Thelia loop : [Feature availability](http://doc.thelia.net/en/docume
     public static function getValues(array $slugs, array $featureIds, $locale = 'en_US')
 ```
 
+### FeatureType::getFirstValues
+
+```php
+    /**
+     * Returns a set of first values
+     * If the value does not exist, it is replaced by null
+     *
+     * <code>
+     * $values = FeatureType::getFirstValues(['color','texture', 'other'], [4,7]);
+     * </code>
+     *
+     * <sample>
+     *  array(
+     *  'color' => '#00000',
+     *  'texture' => 'lines.jpg',
+     *  'other' => null
+     * )
+     * </sample>
+     *
+     * @param array $slugs
+     * @param array $featureIds
+     * @param string $locale
+     * @return array
+     */
+    public static function getFirstValues(array $slugs, array $featureIds, $locale = 'en_US')
+```

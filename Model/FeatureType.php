@@ -112,6 +112,50 @@ class FeatureType extends BaseFeatureType
     }
 
     /**
+     * Returns a set of first values
+     * If the value does not exist, it is replaced by null
+     *
+     * <code>
+     * $values = FeatureType::getFirstValues(['color','texture', 'other'], [4,7]);
+     * </code>
+     *
+     * <sample>
+     *  array(
+     *  'color' => '#00000',
+     *  'texture' => 'lines.jpg',
+     *  'other' => null
+     * )
+     * </sample>
+     *
+     * @param array $slugs
+     * @param array $featureIds
+     * @param string $locale
+     * @return array
+     */
+    public static function getFirstValues(array $slugs, array $featureIds, $locale = 'en_US')
+    {
+        $results = self::getValues($slugs, $featureIds, $locale);
+
+        $return = array();
+
+        foreach ($slugs as $slug) {
+            if (!isset($return[$slug])) {
+                $return[$slug] = null;
+            }
+
+            foreach ($results[$slug] as $value) {
+                if ($return[$slug] === null) {
+                    $return[$slug] = $value;
+                    continue;
+                }
+                break;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
      * @param Criteria $query
      */
     protected static function addJoinFeatureFeatureType(Criteria & $query)
