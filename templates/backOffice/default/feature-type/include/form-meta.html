@@ -72,11 +72,21 @@
                         {form_field form=$form field='feature_av' value_key=$ID}
                         {if $INPUT_TYPE == "textarea"}
                           <textarea
-                                  class="{if $INPUT_TYPE != 'color' && $INPUT_TYPE != 'range'}form-control {/if}{$CSS_CLASS}"
+                                  class="form-control {$CSS_CLASS}"
                                   name="feature_type_av_meta-update[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
                                   data-connector="{$SLUG}-{$feature_av_id}"
                                   data-replicate={if !$IS_MULTILINGUAL_FEATURE_AV_VALUE}true{else}false{/if}
                                   >{$data[$feature_av_id]['lang'][$lang_id]['feature_type'][$ID] nofilter}</textarea>
+                        {elseif $INPUT_TYPE == "boolean"}
+                          <select
+                                  class="form-control {$CSS_CLASS}"
+                                  name="feature_type_av_meta-update[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
+                                  data-connector="{$SLUG}-{$feature_av_id}"
+                                  data-replicate={if !$IS_MULTILINGUAL_FEATURE_AV_VALUE}true{else}false{/if}
+                                  >
+                            <option value="0" {if !{$data[$feature_av_id]['lang'][$lang_id]['feature_type'][$ID]}}selected{/if}>{intl l="No"}</option>
+                            <option value="1" {if {$data[$feature_av_id]['lang'][$lang_id]['feature_type'][$ID]}}selected{/if}>{intl l="Yes"}</option>
+                          </select>
                         {else}
                           <input type="{$INPUT_TYPE}"
                                  {if $PATTERN}pattern="{$PATTERN}"{/if}

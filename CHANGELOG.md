@@ -4,3 +4,4 @@
 - Update UI configuration for large feature title
 - Fix #1 #2
 - add static method getFirstValues in model FeatureType
+- Add field type boolean
