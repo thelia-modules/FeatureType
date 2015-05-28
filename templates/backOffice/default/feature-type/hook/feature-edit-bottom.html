@@ -1,7 +1,7 @@
 <div class="row" id="module-feature-type">
     <div class="col-md-12 general-block-decorator">
         <div class="title title-without-tabs">
-            {intl l="Feature type" d="featuretype"}
+            {intl l="Feature type" d="featuretype.bo.default"}
         </div>
         <div class="form-container">
             <div class="row">
@@ -14,10 +14,10 @@
                                     {intl l="ID"}
                                 </th>
                                 <th>
-                                    ({intl l="Slug" d="featuretype"}) - {intl l="Title" d="featuretype"}
+                                    ({intl l="Slug" d="featuretype.bo.default"}) - {intl l="Title" d="featuretype.bo.default"}
                                 </th>
                                 <th>
-                                    {intl l="Action" d="featuretype"}
+                                    {intl l="Action" d="featuretype.bo.default"}
                                 </th>
                             </tr>
                             </thead>
@@ -37,7 +37,7 @@
                                     <td>
                                         <button class="btn btn-danger btn-sm js-action-dissociate" data-action="{url path="/admin/feature-type/{$ID}/dissociate/{$feature_id}"}">
                                             <span class="glyphicon glyphicon-log-out"></span>
-                                            {intl l="Dissociate action" d="featuretype"}
+                                            {intl l="Dissociate action" d="featuretype.bo.default"}
                                         </button>
                                     </td>
                                 </tr>
@@ -46,7 +46,7 @@
                                 <tr>
                                     <td colspan="10">
                                         <div class="alert alert-info">
-                                            {intl l="No feature type for this feature" d="featuretype"}
+                                            {intl l="No feature type for this feature" d="featuretype.bo.default"}
                                         </div>
                                     </td>
                                 </tr>
@@ -65,7 +65,7 @@
 
                                 <div class="input-group">
                                     <select class="form-control">
-                                        <option value="">{intl l="Select an feature type" d="featuretype"}</option>
+                                        <option value="">{intl l="Select an feature type" d="featuretype.bo.default"}</option>
                                         {loop type="feature_type" name="feature_type_select" exclude_id=$exclude_id|implode:','}
                                             <option value="{url path="/admin/feature-type/{$ID}/associate/{$feature_id}"}">({$SLUG}) - {$TITLE}</option>
                                         {/loop}
@@ -74,7 +74,7 @@
                                     <span class="input-group-btn">
                                         <button type="submit" class="btn btn-primary">
                                             <span class="glyphicon glyphicon-log-in">   </span>
-                                            {intl l="Associate action" d="featuretype"}
+                                            {intl l="Associate action" d="featuretype.bo.default"}
                                         </button>
                                     </span>
                                 </div>
@@ -83,12 +83,12 @@
                         {/ifloop}
                         {elseloop rel="feature_type_select"}
                             <div class="alert alert-info">
-                                {intl l="Currently, none of the features types are available" d="featuretype"}
+                                {intl l="Currently, none of the features types are available" d="featuretype.bo.default"}
                             </div>
                         {/elseloop}
                         <span class="help-block">
                             <a href="{url path="/admin/feature-type"}">
-                                {intl l="Create a new feature type" d="featuretype"}
+                                {intl l="Create a new feature type" d="featuretype.bo.default"}
                             </a>
                         </span>
                     </div>
@@ -116,22 +116,22 @@
                     <div class="modal-content">
                         <div class="modal-header bg-primary">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <strong class="modal-title text-uppercase">{intl l="Dissociate feature type" d="featuretype"}</strong>
+                            <strong class="modal-title text-uppercase">{intl l="Dissociate feature type" d="featuretype.bo.default"}</strong>
                         </div>
                         <div class="modal-body">
                             {if $form_error}
                                 <div class="alert alert-danger">{$form_error_message}</div>
                             {/if}
-                            {intl l="Dissociate the feature with the feature type ?" d="featuretype"}
+                            {intl l="Dissociate the feature with the feature type ?" d="featuretype.bo.default"}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                 <span class="glyphicon glyphicon-remove"></span>
-                                {intl l="Close action" d="featuretype"}
+                                {intl l="Close action" d="featuretype.bo.default"}
                             </button>
                             <button type="submit" class="btn btn-danger">
                                 <span class="glyphicon glyphicon-ok"></span>
-                                {intl l="Dissociate action" d="featuretype"}
+                                {intl l="Dissociate action" d="featuretype.bo.default"}
                             </button>
                         </div>
                     </div>
