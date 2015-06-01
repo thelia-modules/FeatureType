@@ -22,8 +22,10 @@ use Propel\Runtime\ActiveQuery\Join;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Element\PropelSearchLoopInterface;
+use Thelia\Core\Template\Loop\Argument\Argument;
 use Thelia\Core\Template\Loop\FeatureAvailability;
 use Thelia\Model\FeatureAv;
+use Thelia\Model\Map\FeatureAvTableMap;
 
 /**
  * Class FeatureAvailabilityExtendLoop
@@ -32,6 +34,93 @@ use Thelia\Model\FeatureAv;
  */
 class FeatureAvailabilityExtendLoop extends FeatureAvailability implements PropelSearchLoopInterface
 {
+    /**
+     * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
+     */
+    protected function getArgDefinitions()
+    {
+        return parent::getArgDefinitions()->addArguments(array(
+            Argument::createIntListTypeArgument("feature_type_id"),
+            Argument::createAnyTypeArgument("feature_type_slug")
+        ));
+    }
+
+    /**
+     * this method returns a Propel ModelCriteria
+     *
+     * @return \Propel\Runtime\ActiveQuery\ModelCriteria
+     */
+    public function buildModelCriteria()
+    {
+        $query = parent::buildModelCriteria();
+
+        if (null !== $featureTypeSlug = $this->getFeatureTypeSlug()) {
+            $featureTypeSlug = array_map(function($value) {
+                return "'" . addslashes($value) . "'";
+            }, explode(',', $featureTypeSlug));
+
+            $join = new Join();
+
+            $join->addExplicitCondition(
+                FeatureAvTableMap::TABLE_NAME,
+                'FEATURE_ID',
+                null,
+                FeatureFeatureTypeTableMap::TABLE_NAME,
+                'FEATURE_ID',
+                null
+            );
+
+            $join2 = new Join();
+
+            $join2->addExplicitCondition(
+                FeatureFeatureTypeTableMap::TABLE_NAME,
+                'FEATURE_TYPE_ID',
+                null,
+                FeatureTypeTableMap::TABLE_NAME,
+                'ID',
+                null
+            );
+
+            $join->setJoinType(Criteria::JOIN);
+            $join2->setJoinType(Criteria::JOIN);
+
+            $query
+                ->addJoinObject($join, 'feature_feature_type_join')
+                ->addJoinObject($join2, 'feature_type_join')
+                ->addJoinCondition(
+                    'feature_type_join',
+                    '`feature_type`.`slug` IN ('.implode(',', $featureTypeSlug).')'
+                );
+        }
+
+        if (null !== $featureTypeId = $this->getFeatureTypeId()) {
+            $join = new Join();
+
+            $join->addExplicitCondition(
+                FeatureAvTableMap::TABLE_NAME,
+                'FEATURE_ID',
+                null,
+                FeatureFeatureTypeTableMap::TABLE_NAME,
+                'FEATURE_ID',
+                null
+            );
+
+            $join->setJoinType(Criteria::JOIN);
+
+            $query
+                ->addJoinObject($join, 'feature_type_join')
+                ->addJoinCondition(
+                    'feature_type_join',
+                    '`feature_feature_type`.`feature_type_id` IN (?)',
+                    implode(',', $featureTypeId),
+                    null,
+                    \PDO::PARAM_INT
+                );
+        }
+
+        return $query;
+    }
+
     /**
      * @param LoopResult $loopResult
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection

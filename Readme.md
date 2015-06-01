@@ -91,7 +91,7 @@ Extends the Thelia loop : [Feature](http://doc.thelia.net/en/documentation/loop/
 #### Example
 ```smarty
     {loop name="feature_extend_feature_type" type="feature_extend_feature_type-payment" feature_type_id="1,2,3"}
-        {$TITLE} </br>
+        {$TITLE} <br/>
 
         {if $COLOR}
             The feature has type color
@@ -107,6 +107,13 @@ Extends the Thelia loop : [Feature](http://doc.thelia.net/en/documentation/loop/
 
 Extends the Thelia loop : [Feature availability](http://doc.thelia.net/en/documentation/loop/feature_availability.html)
 
+#### Other input arguments
+
+|Argument |Description |
+|---      |--- |
+|**feature_type_id**   | A single or a list of features type ids. |
+|**feature_type_slug**   | A single or a list of features type slugs. |
+
 #### Other output arguments
 
 * The features types associated.
@@ -116,8 +123,13 @@ Extends the Thelia loop : [Feature availability](http://doc.thelia.net/en/docume
 #### Example
 ```smarty
     title : color : my feature type
-    {loop name="feature_availability_extend_feature_type" type="feature_availability_extend_feature_type" feature_id="1"}
-        {$TITLE} : {$COLOR} : {$MY_FEATURE_TYPE} </br>
+    {loop name="feature_availability_extend_feature_type" type="feature_availability_extend_feature_type" feature="1"}
+        {$TITLE} : {$COLOR} : {$MY_FEATURE_TYPE} <br/>
+    {/loop}
+
+    title : color : my feature type
+    {loop name="feature_availability_extend_feature_type" type="feature_availability_extend_feature_type" feature_type_slug="color"}
+        {$TITLE} : {$COLOR} : {$MY_FEATURE_TYPE} <br/>
     {/loop}
 ```
 
