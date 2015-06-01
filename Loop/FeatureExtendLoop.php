@@ -39,7 +39,8 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
     protected function getArgDefinitions()
     {
         return parent::getArgDefinitions()->addArguments(array(
-            Argument::createIntListTypeArgument("feature_type_id")
+            Argument::createIntListTypeArgument("feature_type_id"),
+            Argument::createAnyTypeArgument("feature_type_slug")
         ));
     }
 
@@ -51,6 +52,45 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
     public function buildModelCriteria()
     {
         $query = parent::buildModelCriteria();
+
+        if (null !== $featureTypeSlug = $this->getFeatureTypeSlug()) {
+            $featureTypeSlug = array_map(function($value) {
+                return "'" . addslashes($value) . "'";
+            }, explode(',', $featureTypeSlug));
+
+            $join = new Join();
+
+            $join->addExplicitCondition(
+                FeatureTableMap::TABLE_NAME,
+                'ID',
+                null,
+                FeatureFeatureTypeTableMap::TABLE_NAME,
+                'FEATURE_ID',
+                null
+            );
+
+            $join2 = new Join();
+
+            $join2->addExplicitCondition(
+                FeatureFeatureTypeTableMap::TABLE_NAME,
+                'FEATURE_TYPE_ID',
+                null,
+                FeatureTypeTableMap::TABLE_NAME,
+                'ID',
+                null
+            );
+
+            $join->setJoinType(Criteria::JOIN);
+            $join2->setJoinType(Criteria::JOIN);
+
+            $query
+                ->addJoinObject($join, 'feature_feature_type_join')
+                ->addJoinObject($join2, 'feature_type_join')
+                ->addJoinCondition(
+                    'feature_type_join',
+                    '`feature_type`.`slug` IN ('.implode(',', $featureTypeSlug).')'
+                );
+        }
 
         if (null !== $featureTypeId = $this->getFeatureTypeId()) {
             $join = new Join();

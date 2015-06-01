@@ -6,3 +6,4 @@
 - add static method getFirstValues in model FeatureType
 - Add field type boolean
 - Add input args (feature_type_id, feature_type_slug) for loop feature_availability_extend_feature_type
+- Add input arg feature_type_slug for loop feature_extend_feature_type
