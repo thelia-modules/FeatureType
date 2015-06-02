@@ -8,6 +8,7 @@
         <loop name="feature_type" class="FeatureType\Loop\FeatureTypeLoop" />
         <loop name="feature_extend_feature_type" class="FeatureType\Loop\FeatureExtendLoop" />
         <loop name="feature_availability_extend_feature_type" class="FeatureType\Loop\FeatureAvailabilityExtendLoop" />
+        <loop name="feature_value_extend_feature_type" class="FeatureType\Loop\FeatureValueExtendLoop" />
     </loops>
 
     <forms>

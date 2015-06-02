@@ -24,7 +24,7 @@ Thelia > 2.1
 Add it in your main thelia composer.json file
 
 ```
-composer require thelia/feature-type-module:~1.0
+composer require thelia/feature-type-module:~1.1
 ```
 
 ## Usage
@@ -59,7 +59,7 @@ composer require thelia/feature-type-module:~1.0
 
 |Variable       |Description |
 |---            |--- |
-|$ID            | The feature type id |
+|ID            | The feature type id |
 |SLUG      | The feature type slug |
 |TITLE    | The feature type title |
 |DESCRIPTION    | The feature type description |
@@ -131,6 +131,24 @@ Extends the Thelia loop : [Feature availability](http://doc.thelia.net/en/docume
     title : color : my feature type
     {loop name="feature_availability_extend_feature_type" type="feature_availability_extend_feature_type" feature_type_slug="color"}
         {$TITLE} : {$COLOR} : {$MY_FEATURE_TYPE} <br/>
+    {/loop}
+```
+
+### feature_value_extend_feature_type
+
+Extends the Thelia loop : [Feature value](http://doc.thelia.net/en/documentation/loop/feature_value.html)
+
+#### Other output arguments
+
+* The features types associated.
+* The variable name is equal to the name of the slug,
+* The variable contains the value.
+
+#### Example
+```smarty
+    title : color
+    {loop name="feature_value_extend_feature_type" type="feature_value_extend_feature_type" feature="1" product="1"}
+        {$TITLE} : {$COLOR} <br/>
     {/loop}
 ```
 
