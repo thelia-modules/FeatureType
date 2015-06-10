@@ -53,10 +53,12 @@ class FeatureEditHook extends BaseHook
      */
     public function onFeatureEditBottom(HookRenderEvent $event)
     {
+        $data = self::hydrateForm($event->getArgument('feature_id'));
+
         $form = new FeatureTypeAvMetaUpdateForm(
             $this->getRequest(),
             'form',
-            self::hydrateForm($event->getArgument('feature_id')),
+            $data,
             array(),
             $this->container
         );
@@ -66,7 +68,8 @@ class FeatureEditHook extends BaseHook
         $event->add($this->render(
             'feature-type/hook/feature-edit-bottom.html',
             array(
-                'feature_id' => $event->getArgument('feature_id')
+                'feature_id' => $event->getArgument('feature_id'),
+                'form_meta_data' => $data
             )
         ));
     }

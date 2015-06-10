@@ -3,7 +3,7 @@
 - Add field type textarea
 - Update UI configuration for large feature title
 - Fix #1 #2
-- add static method getFirstValues in model FeatureType
+- Add static method getFirstValues in model FeatureType
 - Add field type boolean
 - Add input args (feature_type_id, feature_type_slug) for loop feature_availability_extend_feature_type
 - Add input arg feature_type_slug for loop feature_extend_feature_type
@@ -11,4 +11,5 @@
 
 # 1.1.1
 
-- fix returns values depending on the language
+- Fix returns values depending on the language
+- Fix display edit meta data for feature availability has not i18n en_US

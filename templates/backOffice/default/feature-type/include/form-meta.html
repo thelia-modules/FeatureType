@@ -56,14 +56,18 @@
               </tr>
               </thead>
               <tbody>
+              {$featureAvTitle=[]}
               {loop type="feature-availability" name="feature_availability" feature=$feature_id lang=$lang_id}
-                {$feature_av_id = $ID}
+              {$featureAvTitle[$ID] = $TITLE}
+              {/loop}
+
+              {foreach from=$form_meta_data.feature_av key=feature_av_id item=foo}
                 <tr>
                   <td>
-                    {$ID}
+                    {$feature_av_id}
                   </td>
                   <td>
-                    {$TITLE}
+                    {$featureAvTitle[$feature_av_id]}
                   </td>
                   {loop type="feature_type" name="feature_type_input" feature_id=$feature_id lang=$lang_id}
                   {if $HAS_FEATURE_AV_VALUE}
@@ -108,7 +112,7 @@
                   {/if}
                   {/loop}
                 </tr>
-              {/loop}
+              {/foreach}
               </tbody>
             </table>
           </div>
