@@ -23,7 +23,6 @@ use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Element\PropelSearchLoopInterface;
 use Thelia\Core\Template\Loop\FeatureValue;
-use Thelia\Model\FeatureAv;
 use Thelia\Model\FeatureProduct;
 use Thelia\Model\Map\FeatureAvTableMap;
 
@@ -41,14 +40,10 @@ class FeatureValueExtendLoop extends FeatureValue implements PropelSearchLoopInt
     private function getFeaturesMeta(LoopResult $loopResult)
     {
         $featureAvIds = array();
-        $locale = null;
 
         /** @var FeatureProduct $featureValue */
         foreach ($loopResult->getResultDataCollection() as $featureValue) {
             $featureAvIds[] = $featureValue->getFeatureAvId();
-            if ($locale === null) {
-                $locale = $this->locale;
-            }
         }
 
         $joinFeatureFeatureType = new Join();
@@ -78,7 +73,7 @@ class FeatureValueExtendLoop extends FeatureValue implements PropelSearchLoopInt
         $joinFeatureType->setJoinType(Criteria::INNER_JOIN);
 
         $query = FeatureTypeAvMetaQuery::create()
-            ->filterByLocale($locale)
+            ->filterByLocale($this->locale)
             ->filterByFeatureAvId($featureAvIds, Criteria::IN)
             ->addJoinObject($joinFeatureFeatureType)
             ->addJoinObject($joinFeatureType);

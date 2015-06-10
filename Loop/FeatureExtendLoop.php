@@ -127,14 +127,10 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
     private function getFeaturesType(LoopResult $loopResult)
     {
         $featureIds = array();
-        $locale = null;
 
         /** @var FeatureModel $feature */
         foreach ($loopResult->getResultDataCollection() as $feature) {
             $featureIds[] = $feature->getId();
-            if ($locale === null) {
-                $locale = $feature->getLocale();
-            }
         }
 
         $join = new Join();

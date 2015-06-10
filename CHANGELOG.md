@@ -8,3 +8,7 @@
 - Add input args (feature_type_id, feature_type_slug) for loop feature_availability_extend_feature_type
 - Add input arg feature_type_slug for loop feature_extend_feature_type
 - Add loop feature_value_extend_feature_type
+
+# 1.1.1
+
+- fix returns values depending on the language

@@ -128,14 +128,10 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
     private function getFeaturesMeta(LoopResult $loopResult)
     {
         $featureAvIds = array();
-        $locale = null;
 
         /** @var FeatureAV $featureAv */
         foreach ($loopResult->getResultDataCollection() as $featureAv) {
             $featureAvIds[] = $featureAv->getId();
-            if ($locale === null) {
-                $locale = $featureAv->getLocale();
-            }
         }
 
         $joinFeatureFeatureType = new Join();
@@ -165,7 +161,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
         $joinFeatureType->setJoinType(Criteria::INNER_JOIN);
 
         $query = FeatureTypeAvMetaQuery::create()
-            ->filterByLocale($locale)
+            ->filterByLocale($this->locale)
             ->filterByFeatureAvId($featureAvIds, Criteria::IN)
             ->addJoinObject($joinFeatureFeatureType)
             ->addJoinObject($joinFeatureType);
