@@ -13,3 +13,4 @@
 
 - Fix returns values depending on the language
 - Fix display edit meta data for feature availability has not i18n en_US
+- Fix slug length to 50 characters
