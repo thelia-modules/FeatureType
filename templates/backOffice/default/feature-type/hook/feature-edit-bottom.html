@@ -93,7 +93,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="col-md-7">
+                <div class="col-md-{if {count name="feature_type" type="feature_type" feature_id=$feature_id} > 2}12{else}7{/if}">
                     <div class="well well-sm">
                         {include file="feature-type/include/form-meta.html"}
                     </div>

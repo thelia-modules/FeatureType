@@ -91,7 +91,7 @@ Extends the Thelia loop : [Feature](http://doc.thelia.net/en/documentation/loop/
 
 #### Example
 ```smarty
-    {loop name="feature_extend_feature_type" type="feature_extend_feature_type-payment" feature_type_id="1,2,3"}
+    {loop name="feature_extend_feature_type" type="feature_extend_feature_type" feature_type_id="1,2,3"}
         {$TITLE} <br/>
 
         {if $COLOR}

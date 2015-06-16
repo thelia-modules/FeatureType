@@ -14,3 +14,4 @@
 - Fix returns values depending on the language
 - Fix display edit meta data for feature availability has not i18n en_US
 - Fix slug length to 50 characters
+- Add large table in feature edit, for feature associated with more than 2 feature types
