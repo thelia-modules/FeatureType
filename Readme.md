@@ -226,3 +226,43 @@ Extends the Thelia loop : [Feature value](http://doc.thelia.net/en/documentation
      */
     public static function getFirstValues(array $slugs, array $featureIds, $locale = 'en_US')
 ```
+
+### FeatureType::getFeatureAv
+
+```php
+    /**
+     * Find FeatureAv by slugs, featureIds, values, locales
+     *
+     * <code>
+     * $featureAv = FeatureType::getFeatureAv('color', '1', '#00000');
+     * </code>
+     *
+     * @param null|string|array $slugs
+     * @param null|string|array $featureIds
+     * @param null|string|array $values meta values
+     * @param null|string|array $locale
+     *
+     * @return \Thelia\Model\FeatureAv
+     */
+    public static function getFeatureAv($slugs = null, $featureIds = null, $values = null, $locale = 'en_US')
+```
+
+### FeatureType::getFeatureAvs
+
+```php
+    /**
+     * Find FeatureAv by slugs, featureIds, values, locales
+     *
+     * <code>
+     * $featureAv = FeatureType::getFeatureAvs('color', '1', '#00000');
+     * </code>
+     *
+     * @param null|string|array $slugs
+     * @param null|string|array $featureIds
+     * @param null|string|array $values meta values
+     * @param null|string|array $locale
+     *
+     * @return \Thelia\Model\FeatureAv
+     */
+    public static function getFeatureAvs($slugs = null, $featureIds = null, $values = null, $locale = 'en_US')
+```

@@ -1,3 +1,7 @@
+# 1.2
+
+- Add static methods getFeatureAv and getFeatureAvs in model FeatureType
+
 # 1.1.1
 
 - Fix returns values depending on the language

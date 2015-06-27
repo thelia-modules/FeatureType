@@ -18,6 +18,7 @@ use FeatureType\Model\Map\FeatureTypeAvMetaTableMap;
 use FeatureType\Model\Map\FeatureTypeTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\Join;
+use Thelia\Model\FeatureAvQuery;
 use Thelia\Model\Map\FeatureAvTableMap;
 
 /**
@@ -85,18 +86,8 @@ class FeatureType extends BaseFeatureType
         self::addJoinFeatureType($query);
         self::addJoinFeatureAv($query);
 
-        $in = implode(
-            ',',
-            array_map(
-                function($v) {
-                    return "'" . $v . "'";
-                },
-                $slugs
-            )
-        );
-
         $query
-            ->addJoinCondition('feature_type', "`feature_type`.`SLUG` IN (" . $in . ")")
+            ->addJoinCondition('feature_type', "`feature_type`.`SLUG` IN (" . self::formatStringsForIn($slugs) . ")")
             ->addJoinCondition('feature_av', "`feature_av`.`ID` = `feature_type_av_meta`.`FEATURE_AV_ID`")
             ->withColumn('`feature_type`.`SLUG`', 'SLUG')
             ->withColumn('`feature_av`.`ID`', 'FEATURE_AV_ID');
@@ -156,6 +147,142 @@ class FeatureType extends BaseFeatureType
     }
 
     /**
+     * Find FeatureAv by slugs, featureIds, values, locales
+     *
+     * <code>
+     * $featureAv = FeatureType::getFeatureAv('color', '1', '#00000');
+     * </code>
+     *
+     * @param null|string|array $slugs
+     * @param null|string|array $featureIds
+     * @param null|string|array $values meta values
+     * @param null|string|array $locale
+     *
+     * @return \Thelia\Model\FeatureAv
+     */
+    public static function getFeatureAv($slugs = null, $featureIds = null, $values = null, $locale = 'en_US')
+    {
+        return self::queryFeatureAvs($slugs, $featureIds, $values, $locale)->findOne();
+    }
+
+    /**
+     * Find FeatureAv by slugs, featureIds, values, locales
+     *
+     * <code>
+     * $featureAv = FeatureType::getFeatureAvs('color', '1', '#00000');
+     * </code>
+     *
+     * @param null|string|array $slugs
+     * @param null|string|array $featureIds
+     * @param null|string|array $values meta values
+     * @param null|string|array $locale
+     *
+     * @return \Thelia\Model\FeatureAv
+     */
+    public static function getFeatureAvs($slugs = null, $featureIds = null, $values = null, $locale = 'en_US')
+    {
+        return self::queryFeatureAvs($slugs, $featureIds, $values, $locale)->find();
+    }
+
+    /**
+     * @param null|string|array $slugs
+     * @param null|string|array $featureIds
+     * @param null|string|array $values meta values
+     * @param null|string|array $locales
+     *
+     * @return FeatureAvQuery
+     */
+    protected static function queryFeatureAvs($slugs = null, $featureIds = null, $values = null, $locales = null)
+    {
+        if (!is_array($slugs) && $slugs !== null) {
+            $slugs = array($slugs);
+        }
+
+        if (!is_array($featureIds) && $featureIds !== null) {
+            $featureIds = array($featureIds);
+        }
+
+        if (!is_array($values) && $values !== null) {
+            $values = array($values);
+        }
+
+        if (!is_array($locales) && $locales !== null) {
+            $locales = array($locales);
+        }
+
+        $query = FeatureAvQuery::create();
+
+        if ($featureIds !== null) {
+            $query->filterByFeatureId($featureIds, Criteria::IN);
+        }
+
+        self::addJoinFeatureTypeAvMeta($query);
+        self::addJoinFeatureFeatureType($query);
+        self::addJoinFeatureType($query);
+
+        if ($locales !== null) {
+            $query->addJoinCondition(
+                'feature_type_av_meta',
+                "`feature_type_av_meta`.`LOCALE` IN (" . self::formatStringsForIn($locales) . ")"
+            );
+        }
+
+        if ($values !== null) {
+            $query->addJoinCondition(
+                'feature_type_av_meta',
+                "`feature_type_av_meta`.`VALUE` IN (" . self::formatStringsForIn($values) . ")"
+            );
+        }
+
+        if ($slugs !== null) {
+            $query->addJoinCondition(
+                'feature_type',
+                "`feature_type`.`SLUG` IN (" . self::formatStringsForIn($slugs) . ")"
+            );
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param array $strings
+     * @return string
+     */
+    protected static function formatStringsForIn(array $strings)
+    {
+        return implode(
+            ',',
+            array_map(
+                function($v) {
+                    return "'" . $v . "'";
+                },
+                $strings
+            )
+        );
+    }
+
+    /**
+     * @param Criteria $query
+     */
+    protected static function addJoinFeatureTypeAvMeta(Criteria & $query)
+    {
+        $join = new Join();
+
+        $join->addExplicitCondition(
+            FeatureAvTableMap::TABLE_NAME,
+            'ID',
+            null,
+            FeatureTypeAvMetaTableMap::TABLE_NAME,
+            'FEATURE_AV_ID',
+            null
+        );
+
+        $join->setJoinType(Criteria::INNER_JOIN);
+
+        $query->addJoinObject($join, 'feature_type_av_meta');
+    }
+
+    /**
      * @param Criteria $query
      */
     protected static function addJoinFeatureFeatureType(Criteria & $query)
@@ -173,7 +300,7 @@ class FeatureType extends BaseFeatureType
 
         $join->setJoinType(Criteria::INNER_JOIN);
 
-        $query->addJoinObject($join, 'feature_type_av_meta');
+        $query->addJoinObject($join, 'feature_feature_type');
     }
 
     /**
