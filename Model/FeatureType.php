@@ -61,8 +61,8 @@ class FeatureType extends BaseFeatureType
      * )
      * </sample>
      *
-     * @param array $slugs[]
-     * @param array $featureIds[]
+     * @param string[] $slugs
+     * @param int[] $featureIds
      * @param string $locale
      * @return string
      * @throws \Propel\Runtime\Exception\PropelException
@@ -118,8 +118,8 @@ class FeatureType extends BaseFeatureType
      * )
      * </sample>
      *
-     * @param array $slugs
-     * @param array $featureIds
+     * @param string[] $slugs
+     * @param int[] $featureIds
      * @param string $locale
      * @return array
      */

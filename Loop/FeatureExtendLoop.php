@@ -14,6 +14,7 @@ namespace FeatureType\Loop;
 
 use FeatureType\Model\FeatureFeatureType;
 use FeatureType\Model\FeatureFeatureTypeQuery;
+use FeatureType\Model\FeatureType;
 use FeatureType\Model\Map\FeatureFeatureTypeTableMap;
 use FeatureType\Model\Map\FeatureTypeTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -175,7 +176,7 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
 
         $slugs = array();
 
-        /** @var $featureTypes $featureType */
+        /** @var FeatureType $featureType */
         foreach ($featureTypes as $featureType) {
             $slugs[$featureType->getVirtualColumn('SLUG')] = true;
         }

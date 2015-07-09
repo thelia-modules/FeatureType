@@ -8,6 +8,10 @@ Authors: Thelia <info@thelia.net>, Gilles Bourgeat <gbourgeat@openstudio.fr>
 * An feature type can have values or not.
 * Values can be unique by language.
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thelia-modules/FeatureType/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thelia-modules/FeatureType/?branch=master)
+[![License](https://poser.pugx.org/thelia/feature-type-module/license)](https://packagist.org/packages/thelia/feature-type-module)
+[![Latest Stable Version](https://poser.pugx.org/thelia/feature-type-module/v/stable)](https://packagist.org/packages/thelia/feature-type-module)
+
 ## Compatibility
 
 Thelia >= 2.1
@@ -191,8 +195,8 @@ Extends the Thelia loop : [Feature value](http://doc.thelia.net/en/documentation
      * )
      * </sample>
      *
-     * @param array $slugs[]
-     * @param array $featureIds[]
+     * @param string[] $slugs
+     * @param int[] $featureIds
      * @param string $locale
      * @return string
      * @throws \Propel\Runtime\Exception\PropelException
@@ -219,8 +223,8 @@ Extends the Thelia loop : [Feature value](http://doc.thelia.net/en/documentation
      * )
      * </sample>
      *
-     * @param array $slugs
-     * @param array $featureIds
+     * @param string[] $slugs
+     * @param int[] $featureIds
      * @param string $locale
      * @return array
      */
