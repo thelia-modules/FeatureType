@@ -43,4 +43,6 @@ return array(
     'Update action' => 'Mettre à jour',
     'Update feature type' => 'Mettre à jour le type de caractéristique',
     'Used by' => 'Utilisé par',
+    "http://thelia-school.com/create-types-of-features-and-attributes.html" => "http://thelia-school.com/types-de-caracteristiques-et-declinaisons-avec-featuretype-et-attributetype.html",
+    "Tutorial" => "Tutoriel",
 );

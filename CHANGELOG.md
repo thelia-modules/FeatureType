@@ -2,6 +2,7 @@
 
 - Add static methods getFeatureAv and getFeatureAvs in model FeatureType
 - Fix the slug length to 50 characters in the template
+- Add link to the tutorial
 
 # 1.1.1
 
