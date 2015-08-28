@@ -189,7 +189,7 @@ class FeatureTypeController extends BaseAdminController
             $this->validateForm($form, 'POST');
 
             if (null === $featureType = FeatureTypeQuery::create()->findPk($id)) {
-                new \Exception(Translator::getInstance()->trans(
+                throw new \Exception(Translator::getInstance()->trans(
                     "Feature type not found",
                     array(),
                     FeatureTypeCore::MODULE_DOMAIN

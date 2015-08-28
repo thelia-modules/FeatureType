@@ -165,22 +165,22 @@ class FeatureTypeCreateForm extends FeatureTypeForm
     {
         // test if good format
         if (!preg_match('/[a-z][a-z_0-9]{3,50}/', $value)) {
-            $context->addViolation(Translator::getInstance()->trans(Translator::getInstance()->trans(
+            $context->addViolation(Translator::getInstance()->trans(
                 "The slug is not valid",
                 array(),
                 FeatureType::MODULE_DOMAIN
-            )));
+            ));
         }
 
         // test if reserved
         if (in_array($value, explode(',', FeatureType::RESERVED_SLUG))) {
-            $context->addViolation(Translator::getInstance()->trans(Translator::getInstance()->trans(
+            $context->addViolation(Translator::getInstance()->trans(
                 "The feature slug <%slug> is reserved",
                 array(
                     '%slug' => $value
                 ),
                 FeatureType::MODULE_DOMAIN
-            )));
+            ));
         }
     }
 
@@ -192,13 +192,13 @@ class FeatureTypeCreateForm extends FeatureTypeForm
     {
         // test if exist
         if (FeatureTypeQuery::create()->findOneBySlug($value) !== null) {
-            $context->addViolation(Translator::getInstance()->trans(Translator::getInstance()->trans(
+            $context->addViolation(Translator::getInstance()->trans(
                 "The feature slug <%slug> already exists",
                 array(
                     '%slug' => $value
                 ),
                 FeatureType::MODULE_DOMAIN
-            )));
+            ));
         }
     }
 }
