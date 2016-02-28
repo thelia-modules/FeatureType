@@ -24,7 +24,7 @@ use Thelia\Model\Map\FeatureAvTableMap;
 /**
  * Class FeatureType
  * @package FeatureType\Model
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureType extends BaseFeatureType
 {

@@ -33,12 +33,12 @@ use Thelia\Model\LangQuery;
 /**
  * Class FeatureEditHook
  * @package FeatureType\Hook
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureEditHook extends BaseHook
 {
     /** @var ContainerInterface */
-    private $container = null;
+    protected $container = null;
 
     /**
      * @param ContainerInterface $container
@@ -98,7 +98,7 @@ class FeatureEditHook extends BaseHook
      * @param FeatureAv $featureAv
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
      */
-    private function getFeatureTypeAvMetas(FeatureAv $featureAv)
+    protected function getFeatureTypeAvMetas(FeatureAv $featureAv)
     {
         $join = new Join();
 
@@ -124,7 +124,7 @@ class FeatureEditHook extends BaseHook
      * @param int $featureId
      * @return array
      */
-    private function hydrateForm($featureId)
+    protected function hydrateForm($featureId)
     {
         $data = array('feature_av' => array());
 

@@ -22,7 +22,7 @@ use Thelia\Core\Translation\Translator;
 /**
  * Class FeatureTypeCreateForm
  * @package FeatureType\Form
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeCreateForm extends FeatureTypeForm
 {

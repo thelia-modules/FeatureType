@@ -19,15 +19,15 @@ use Thelia\Core\Event\ActionEvent;
 /**
  * Class FeatureTypeAvMetaEvent
  * @package FeatureType\Event
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeAvMetaEvent extends ActionEvent
 {
     /** @var ConnectionInterface|null */
-    private $connectionInterface = null;
+    protected $connectionInterface = null;
 
     /** @var FeatureTypeAvMeta */
-    private $featureAvMeta = null;
+    protected $featureAvMeta = null;
 
     /**
      * @param FeatureTypeAvMeta $featureAvMeta

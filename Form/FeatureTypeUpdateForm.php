@@ -18,7 +18,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 /**
  * Class FeatureTypeUpdateForm
  * @package FeatureType\Form
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeUpdateForm extends FeatureTypeCreateForm
 {

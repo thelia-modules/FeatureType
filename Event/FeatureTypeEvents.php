@@ -15,7 +15,7 @@ namespace FeatureType\Event;
 /**
  * Class FeatureTypeEvents
  * @package FeatureType\Event
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeEvents
 {

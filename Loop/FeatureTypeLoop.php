@@ -28,7 +28,7 @@ use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 /**
  * Class FeatureTypeLoop
  * @package FeatureType\Loop
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeLoop extends BaseI18nLoop implements PropelSearchLoopInterface
 {

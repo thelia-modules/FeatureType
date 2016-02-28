@@ -18,7 +18,7 @@ use Thelia\Core\Hook\BaseHook;
 /**
  * Class ConfigurationHook
  * @package FeatureType\Hook
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class ConfigurationHook extends BaseHook
 {

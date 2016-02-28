@@ -17,7 +17,7 @@ use Thelia\Form\BaseForm;
 /**
  * Class FeatureTypeForm
  * @package FeatureType\Form
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeForm extends BaseForm
 {

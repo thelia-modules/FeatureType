@@ -29,7 +29,7 @@ use Thelia\Core\HttpFoundation\Response;
 /**
  * Class FeatureTypeController
  * @package FeatureType\Controller
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeController extends BaseAdminController
 {
@@ -41,7 +41,7 @@ class FeatureTypeController extends BaseAdminController
      */
     public function viewAllAction($params = array())
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -55,7 +55,7 @@ class FeatureTypeController extends BaseAdminController
      */
     public function viewAction($id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::VIEW)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::VIEW)) {
             return $response;
         }
 
@@ -98,7 +98,7 @@ class FeatureTypeController extends BaseAdminController
         if ($this->getRequest()->isXmlHttpRequest()) {
             return $this->render("feature-type/include/form-update");
         } else {
-            return self::viewAllAction(array(
+            return $this->viewAllAction(array(
                 'feature_type_id' => $id
             ));
         }
@@ -109,7 +109,7 @@ class FeatureTypeController extends BaseAdminController
      */
     public function createAction()
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::CREATE)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
         }
 
@@ -118,7 +118,7 @@ class FeatureTypeController extends BaseAdminController
         try {
             $this->dispatch(
                 FeatureTypeEvents::FEATURE_TYPE_CREATE,
-                new FeatureTypeEvent(self::hydrateFeatureTypeByForm(
+                new FeatureTypeEvent($this->hydrateFeatureTypeByForm(
                     $this->validateForm($form, 'POST')
                 ))
             );
@@ -131,7 +131,7 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return self::viewAllAction();
+            return $this->viewAllAction();
         }
     }
 
@@ -141,7 +141,7 @@ class FeatureTypeController extends BaseAdminController
      */
     public function updateAction($id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::UPDATE)) {
             return $response;
         }
 
@@ -151,7 +151,7 @@ class FeatureTypeController extends BaseAdminController
             $this->dispatch(
                 FeatureTypeEvents::FEATURE_TYPE_UPDATE,
                 new FeatureTypeEvent(
-                    self::hydrateFeatureTypeByForm(
+                    $this->hydrateFeatureTypeByForm(
                         $this->validateForm($form, 'POST'),
                         $id
                     )
@@ -167,7 +167,7 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return self::viewAllAction(array(
+            return $this->viewAllAction(array(
                 'feature_type_id' => $id
             ));
         }
@@ -179,7 +179,7 @@ class FeatureTypeController extends BaseAdminController
      */
     public function deleteAction($id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::DELETE)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::DELETE)) {
             return $response;
         }
 
@@ -210,7 +210,7 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return self::viewAllAction();
+            return $this->viewAllAction();
         }
     }
 
@@ -221,7 +221,7 @@ class FeatureTypeController extends BaseAdminController
      */
     public function copyAction($id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::CREATE)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
         }
 
@@ -273,7 +273,7 @@ class FeatureTypeController extends BaseAdminController
      * @return FeatureType
      * @throws \Exception
      */
-    private function hydrateFeatureTypeByForm($form, $id = null)
+    protected function hydrateFeatureTypeByForm($form, $id = null)
     {
         $data = $form->getData();
 

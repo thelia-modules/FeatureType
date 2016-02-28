@@ -20,7 +20,7 @@ use Thelia\Core\Translation\Translator;
 /**
  * Class FeatureTypeAvMetaUpdateForm
  * @package FeatureType\Form
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
 {
