@@ -1,10 +1,6 @@
 <?php
 /*************************************************************************************/
-/*      This file is part of the module FeatureType                                */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
+/*      This file is part of the module FeatureType                                  */
 /*                                                                                   */
 /*      For the full copyright and license information, please view the LICENSE.txt  */
 /*      file that was distributed with this source code.                             */
@@ -15,7 +11,7 @@ namespace FeatureType\Event;
 /**
  * Class FeatureTypeEvents
  * @package FeatureType\Event
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeEvents
 {

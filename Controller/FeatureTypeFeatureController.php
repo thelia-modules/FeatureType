@@ -1,10 +1,6 @@
 <?php
 /*************************************************************************************/
-/*      This file is part of the module FeatureType                                */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
+/*      This file is part of the module FeatureType                                  */
 /*                                                                                   */
 /*      For the full copyright and license information, please view the LICENSE.txt  */
 /*      file that was distributed with this source code.                             */
@@ -25,7 +21,7 @@ use FeatureType\FeatureType as FeatureTypeCore;
 /**
  * Class FeatureTypeFeatureController
  * @package FeatureType\Controller
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeFeatureController extends FeatureTypeController
 {
@@ -36,7 +32,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
      */
     public function associateAction($feature_type_id, $feature_id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::UPDATE)) {
             return $response;
         }
 
@@ -47,7 +43,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
 
             $this->dispatch(
                 FeatureTypeEvents::FEATURE_TYPE_ASSOCIATE,
-                self::getEventAssociation($feature_type_id, $feature_id)
+                $this->getEventAssociation($feature_type_id, $feature_id)
             );
 
             return $this->generateSuccessRedirect($form);
@@ -58,7 +54,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
                 $form
             );
 
-            return self::viewFeature($feature_id);
+            return $this->viewFeature($feature_id);
         }
     }
 
@@ -69,7 +65,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
      */
     public function dissociateAction($feature_type_id, $feature_id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::UPDATE)) {
             return $response;
         }
 
@@ -80,7 +76,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
 
             $this->dispatch(
                 FeatureTypeEvents::FEATURE_TYPE_DISSOCIATE,
-                self::getEventAssociation($feature_type_id, $feature_id)
+                $this->getEventAssociation($feature_type_id, $feature_id)
             );
 
             return $this->generateSuccessRedirect($form);
@@ -91,7 +87,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
                 $form
             );
 
-            return self::viewFeature($feature_id);
+            return $this->viewFeature($feature_id);
         }
     }
 
@@ -101,7 +97,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
      * @return FeatureTypeEvent
      * @throws \Exception
      */
-    private function getEventAssociation($feature_type_id, $feature_id)
+    protected function getEventAssociation($feature_type_id, $feature_id)
     {
         if (null === $feature = FeatureQuery::create()->findPk($feature_id)) {
             throw new \Exception(Translator::getInstance()->trans(

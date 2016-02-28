@@ -20,7 +20,7 @@ use Thelia\Install\Database;
 /**
  * Class FeatureType
  * @package FeatureType
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureType extends BaseModule
 {

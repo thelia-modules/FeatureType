@@ -1,10 +1,6 @@
 <?php
 /*************************************************************************************/
-/*      This file is part of the module FeatureType                                */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
+/*      This file is part of the module FeatureType                                  */
 /*                                                                                   */
 /*      For the full copyright and license information, please view the LICENSE.txt  */
 /*      file that was distributed with this source code.                             */
@@ -26,15 +22,15 @@ use Thelia\Model\LangQuery;
 /**
  * Class FeatureTypeFeatureAvController
  * @package FeatureType\Controller
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeFeatureAvController extends FeatureTypeController
 {
     /** @var Lang[] */
-    private $langs = array();
+    protected $langs = array();
 
     /** @var FeatureFeatureType[] */
-    private $featureFeatureTypes = array();
+    protected $featureFeatureTypes = array();
 
     /**
      * @param int $feature_id
@@ -42,7 +38,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
      */
     public function updateMetaAction($feature_id)
     {
-        if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), 'FeatureType', AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::UPDATE)) {
             return $response;
         }
 
@@ -56,8 +52,8 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
             foreach ($featureAvs as $featureAvId => $featureAv) {
                 foreach ($featureAv['lang'] as $langId => $lang) {
                     foreach ($lang['feature_type'] as $featureTypeId => $value) {
-                        self::dispatchEvent(
-                            self::getFeatureFeatureType($featureTypeId, $feature_id),
+                        $this->dispatchEvent(
+                            $this->getFeatureFeatureType($featureTypeId, $feature_id),
                             $featureAvId,
                             $langId,
                             $value
@@ -74,7 +70,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
                 $form
             );
 
-            return self::viewFeature($feature_id);
+            return $this->viewFeature($feature_id);
         }
     }
 
@@ -85,14 +81,14 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
      * @param string $value
      * @throws \Exception
      */
-    public function dispatchEvent(FeatureFeatureType $featureFeatureType, $featureAvId, $langId, $value)
+    protected function dispatchEvent(FeatureFeatureType $featureFeatureType, $featureAvId, $langId, $value)
     {
         $eventName = FeatureTypeEvents::FEATURE_TYPE_AV_META_UPDATE;
 
         $featureAvMeta = FeatureTypeAvMetaQuery::create()
             ->filterByFeatureAvId($featureAvId)
             ->filterByFeatureFeatureTypeId($featureFeatureType->getId())
-            ->filterByLocale(self::getLocale($langId))
+            ->filterByLocale($this->getLocale($langId))
             ->findOne();
 
         // create if not exist
@@ -102,7 +98,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
             $featureAvMeta = (new FeatureTypeAvMeta())
                 ->setFeatureAvId($featureAvId)
                 ->setFeatureFeatureTypeId($featureFeatureType->getId())
-                ->setLocale(self::getLocale($langId));
+                ->setLocale($this->getLocale($langId));
         }
 
         $featureAvMeta->setValue($value);
@@ -119,7 +115,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
      * @return FeatureFeatureType
      * @throws \Exception
      */
-    private function getFeatureFeatureType($featureTypeId, $featureId)
+    protected function getFeatureFeatureType($featureTypeId, $featureId)
     {
         if (!isset($this->featureFeatureTypes[$featureTypeId])) {
             $this->featureFeatureTypes[$featureTypeId] = FeatureFeatureTypeQuery::create()
@@ -140,7 +136,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
      * @return string
      * @throws \Exception
      */
-    private function getLocale($langId)
+    protected function getLocale($langId)
     {
         if (!isset($this->langs[$langId])) {
             $this->langs[$langId] = LangQuery::create()->findPk($langId);

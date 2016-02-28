@@ -1,10 +1,6 @@
 <?php
 /*************************************************************************************/
-/*      This file is part of the module FeatureType                                */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
+/*      This file is part of the module FeatureType                                  */
 /*                                                                                   */
 /*      For the full copyright and license information, please view the LICENSE.txt  */
 /*      file that was distributed with this source code.                             */
@@ -20,18 +16,18 @@ use Thelia\Model\Feature;
 /**
  * Class FeatureTypeEvent
  * @package FeatureType\Event
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeEvent extends ActionEvent
 {
     /** @var ConnectionInterface|null */
-    private $connectionInterface = null;
+    protected $connectionInterface = null;
 
     /** @var FeatureType */
-    private $featureType = null;
+    protected $featureType = null;
 
     /** @var Feature|null */
-    private $feature = null;
+    protected $feature = null;
 
     /**
      * @param FeatureType $featureType

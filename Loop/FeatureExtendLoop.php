@@ -1,10 +1,6 @@
 <?php
 /*************************************************************************************/
-/*      This file is part of the module FeatureType                                */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
+/*      This file is part of the module FeatureType                                  */
 /*                                                                                   */
 /*      For the full copyright and license information, please view the LICENSE.txt  */
 /*      file that was distributed with this source code.                             */
@@ -30,7 +26,7 @@ use Thelia\Model\Map\FeatureTableMap;
 /**
  * Class FeatureExtendLoop
  * @package FeatureType\Loop
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
 {
@@ -125,7 +121,7 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
      * @param LoopResult $loopResult
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
      */
-    private function getFeaturesType(LoopResult $loopResult)
+    protected function getFeaturesType(LoopResult $loopResult)
     {
         $featureIds = array();
 
@@ -160,7 +156,7 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
      * @param string $slug
      * @return string
      */
-    private function formatSlug($slug)
+    protected function formatSlug($slug)
     {
         return strtoupper(str_replace('-', '_', $slug));
     }

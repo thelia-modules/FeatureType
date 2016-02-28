@@ -1,4 +1,6 @@
-<tr>
-    <td><a href="{url path='/admin/feature-type'}">{intl l='Features types' d="featuretype.bo.default"}</a></td>
-    <td><a class="btn btn-default btn-xs" href="{url path='/admin/feature-type'}"><i class="glyphicon glyphicon-edit"></i></a></td>
-</tr>
+{loop type="auth" name="can_change" role="ADMIN" module="FeatureType" access="VIEW"}
+    <tr>
+        <td><a href="{url path='/admin/feature-type'}">{intl l='Features types' d="featuretype.bo.default"}</a></td>
+        <td><a class="btn btn-default btn-xs" href="{url path='/admin/feature-type'}"><i class="glyphicon glyphicon-edit"></i></a></td>
+    </tr>
+{/loop}

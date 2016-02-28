@@ -2,10 +2,6 @@
 /*************************************************************************************/
 /*      This file is part of the module FeatureType                                  */
 /*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
-/*                                                                                   */
 /*      For the full copyright and license information, please view the LICENSE.txt  */
 /*      file that was distributed with this source code.                             */
 /*************************************************************************************/
@@ -30,7 +26,7 @@ use FeatureType\Model\FeatureTypeQuery;
 /**
  * Class FeatureTypeActionTest
  * @package FeatureType\Tests
- * @author Gilles Bourgeat <gbourgeat@openstudio.fr>
+ * @author Gilles Bourgeat <gilles.bourgeat@gmail.com>
  */
 class FeatureTypeActionTest extends TestCaseWithURLToolSetup
 {
@@ -87,7 +83,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         self::deleteAction();
     }
 
-    private function createAction()
+    protected function createAction()
     {
         $event = new FeatureTypeEvent($this->featureType);
 
@@ -98,7 +94,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         $this->assertNotEquals(null, $featureType->getId());
     }
 
-    private function updateAction()
+    protected function updateAction()
     {
         $this->featureType->setInputType('number');
 
@@ -113,7 +109,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         $this->assertEquals('number', $featureTypeGetSuccessTest->getInputType());
     }
 
-    private function associateAction()
+    protected function associateAction()
     {
         $this->action->associate(
             (new FeatureTypeEvent($this->featureType))->setFeature($this->feature)
@@ -127,7 +123,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         $this->assertNotEquals(null, $featureFeatureType);
     }
 
-    private function createMetaAction()
+    protected function createMetaAction()
     {
         /** @var FeatureAv $featureAv */
         $featureAv = $this->feature->getFeatureAvs()->getFirst();
@@ -149,7 +145,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         $this->assertNotEquals(null, $featureTypeAvMeta->getId());
     }
 
-    private function updateMetaAction()
+    protected function updateMetaAction()
     {
         /** @var FeatureAv $featureAv */
         $featureAv = $this->feature->getFeatureAvs()->getFirst();
@@ -178,7 +174,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         $this->assertEquals('test', $featureTypeAvMetaTest->getValue());
     }
 
-    private function dissociateAction()
+    protected function dissociateAction()
     {
         $this->action->dissociate(
             (new FeatureTypeEvent($this->featureType))->setFeature($this->feature)
@@ -192,7 +188,7 @@ class FeatureTypeActionTest extends TestCaseWithURLToolSetup
         $this->assertEquals(null, $featureFeatureType);
     }
 
-    private function deleteAction()
+    protected function deleteAction()
     {
         $this->action->delete(
             new FeatureTypeEvent($this->featureType)
