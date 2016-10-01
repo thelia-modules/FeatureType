@@ -192,7 +192,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
             $slugs[$featureMeta->getVirtualColumn('SLUG')] = true;
         }
 
-        /** @var FeatureAV $featureAv */
+        /** @var FeatureAv $featureAv */
         foreach ($loopResult->getResultDataCollection() as $featureAv) {
             $loopResultRow = new LoopResultRow($featureAv);
             $loopResultRow
