@@ -165,14 +165,12 @@ class FeatureTypeLoop extends BaseI18nLoop implements PropelSearchLoopInterface
                 ->set("IS_MULTILINGUAL_FEATURE_AV_VALUE", $entry->getIsMultilingualFeatureAvValue())
                 ->set("HAS_FEATURE_AV_VALUE", $entry->getHasFeatureAvValue())
             ;
-            $this->addMoreResults($row, $entry);
+
+            $this->addOutputFields($row, $entry);
+
             $loopResult->addRow($row);
         }
 
         return $loopResult;
-    }
-
-    protected function addMoreResults(LoopResultRow $row, $entryObject)
-    {
     }
 }

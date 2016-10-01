@@ -1,3 +1,11 @@
+# 1.2.4
+
+- Resolve #7 Add method addOutputFields
+
+# 1.2.3
+
+- #8 (js) Fix change on select not cached
+
 # 1.2.2
 
 - Fix check auth
