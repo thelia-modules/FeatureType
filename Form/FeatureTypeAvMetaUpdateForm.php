@@ -10,7 +10,11 @@ namespace FeatureType\Form;
 
 use FeatureType\FeatureType;
 use FeatureType\Form\Type\I18nType;
+use FeatureType\Model\FeatureTypeQuery;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Thelia\Core\Translation\Translator;
 
 /**
@@ -43,6 +47,13 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
                 'collection',
                 array(
                     'type' => new I18nType(),
+                    'constraints' => array(
+                        new Callback(array(
+                            "methods" => array(
+                                array($this,
+                                    "checkImageSize"),
+                        ))
+                    )),
                     'allow_add'    => true,
                     'allow_delete' => true,
                     'label_attr' => array(
@@ -64,5 +75,62 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
                     )
                 )
             );
+    }
+
+    /**
+     * @param $value
+     * @param ExecutionContextInterface $context
+     */
+    public function checkImageSize($value, ExecutionContextInterface $context)
+    {
+        foreach ($value as $featureAvId => $featureAv) {
+            foreach ($featureAv['lang'] as $langId => $lang) {
+                foreach ($lang['feature_type'] as $featureTypeId => $value) {
+
+                    if (!$value instanceof UploadedFile) {
+                        continue;
+                    }
+
+                    $featureType = FeatureTypeQuery::create()
+                        ->findOneById($featureTypeId);
+
+                    $size = getimagesize($value);
+                    list($width, $height) = $size;
+
+                    if (null !== $featureType->getImageMaxWidth() && $width > $featureType->getImageMaxWidth()) {
+                        $context->addViolation(Translator::getInstance()->trans(Translator::getInstance()
+                            ->trans(
+                                "Your image is too large (maximum %width px)",
+                                [
+                                    '%width' => $featureType->getImageMaxWidth(),
+                                ]
+                            ))
+                        );
+                    }
+
+                    if (null !== $featureType->getImageMaxHeight() && $height > $featureType->getImageMaxHeight()) {
+                        $context->addViolation(Translator::getInstance()->trans(Translator::getInstance()
+                            ->trans(
+                                "Your image is too tall (maximum %height px)",
+                                [
+                                    '%height' => $featureType->getImageMaxHeight(),
+                                ]
+                            ))
+                        );
+                    }
+
+                    if (null !== $featureType->getImageRatio() && ($width/$height) !== $featureType->getImageRatio()) {
+                        $context->addViolation(Translator::getInstance()->trans(Translator::getInstance()
+                            ->trans(
+                                "Bad image ratio (%ratio required)",
+                                [
+                                    '%ratio' => $featureType->getImageRatio(),
+                                ]
+                            ))
+                        );
+                    }
+                }
+            }
+        }
     }
 }

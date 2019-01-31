@@ -99,6 +99,16 @@ class FeatureTypeAction implements EventSubscriberInterface
     }
 
     /**
+     * @param FeatureTypeAvMetaEvent $event
+     * @throws \Exception
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function metaDelete(FeatureTypeAvMetaEvent $event)
+    {
+        $event->getFeatureTypeAvMeta()->delete($event->getConnectionInterface());
+    }
+
+    /**
      * Returns an array of event names this subscriber wants to listen to.
      *
      * The array keys are event names and the value can be:
@@ -141,6 +151,9 @@ class FeatureTypeAction implements EventSubscriberInterface
             ),
             FeatureTypeEvents::FEATURE_TYPE_AV_META_UPDATE => array(
                 'metaUpdate', 128
+            ),
+            FeatureTypeEvents::FEATURE_TYPE_AV_META_DELETE => array(
+                'metaDelete', 128
             )
         );
     }

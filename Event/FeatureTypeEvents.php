@@ -22,4 +22,5 @@ class FeatureTypeEvents
     const FEATURE_TYPE_DISSOCIATE = 'feature.type.dissociate';
     const FEATURE_TYPE_AV_META_UPDATE = 'feature.type.av.meta.update';
     const FEATURE_TYPE_AV_META_CREATE = 'feature.type.av.meta.create';
+    const FEATURE_TYPE_AV_META_DELETE = 'feature.type.av.meta.delete';
 }

@@ -13,6 +13,7 @@
 namespace FeatureType;
 
 use Propel\Runtime\Connection\ConnectionInterface;
+use Symfony\Component\Finder\Finder;
 use Thelia\Core\Template\TemplateDefinition;
 use Thelia\Module\BaseModule;
 use Thelia\Install\Database;
@@ -28,6 +29,11 @@ class FeatureType extends BaseModule
 
     const RESERVED_SLUG = 'id,feature_id,id_translater,locale,title,chapo,description,postscriptum,position';
 
+    const FEATURE_TYPE_AV_IMAGE_FOLDER = 'feature_type_av_images';
+
+    /** @var string */
+    const UPDATE_PATH = __DIR__ . DS . 'Config' . DS . 'update';
+
     /**
      * @param ConnectionInterface $con
      */
@@ -37,6 +43,29 @@ class FeatureType extends BaseModule
             $database = new Database($con);
             $database->insertSql(null, [__DIR__ . "/Config/thelia.sql", __DIR__ . "/Config/insert.sql"]);
             self::setConfigValue('is_initialized', true);
+        }
+    }
+
+    /**
+     * @param $currentVersion
+     * @param $newVersion
+     * @param ConnectionInterface|null $con
+     */
+    public function update($currentVersion, $newVersion, ConnectionInterface $con = null)
+    {
+        $finder = (new Finder())->files()->name('#.*?\.sql#')->sortByName()->in(self::UPDATE_PATH);
+
+        if ($finder->count() === 0) {
+            return;
+        }
+
+        $database = new Database($con);
+
+        /** @var \Symfony\Component\Finder\SplFileInfo $updateSQLFile */
+        foreach ($finder as $updateSQLFile) {
+            if (version_compare($currentVersion, str_replace('.sql', '', $updateSQLFile->getFilename()), '<')) {
+                $database->insertSql(null, [$updateSQLFile->getPathname()]);
+            }
         }
     }
 

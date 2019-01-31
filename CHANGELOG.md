@@ -1,3 +1,7 @@
+# 1.3.0
+
+- Add image field type (with uploads !)
+
 # 1.2.4
 
 - Resolve #7 Add method addOutputFields

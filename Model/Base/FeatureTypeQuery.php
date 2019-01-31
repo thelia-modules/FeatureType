@@ -32,6 +32,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFeatureTypeQuery orderByMax($order = Criteria::ASC) Order by the max column
  * @method     ChildFeatureTypeQuery orderByMin($order = Criteria::ASC) Order by the min column
  * @method     ChildFeatureTypeQuery orderByStep($order = Criteria::ASC) Order by the step column
+ * @method     ChildFeatureTypeQuery orderByImageMaxWidth($order = Criteria::ASC) Order by the image_max_width column
+ * @method     ChildFeatureTypeQuery orderByImageMaxHeight($order = Criteria::ASC) Order by the image_max_height column
+ * @method     ChildFeatureTypeQuery orderByImageRatio($order = Criteria::ASC) Order by the image_ratio column
  * @method     ChildFeatureTypeQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildFeatureTypeQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -45,6 +48,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFeatureTypeQuery groupByMax() Group by the max column
  * @method     ChildFeatureTypeQuery groupByMin() Group by the min column
  * @method     ChildFeatureTypeQuery groupByStep() Group by the step column
+ * @method     ChildFeatureTypeQuery groupByImageMaxWidth() Group by the image_max_width column
+ * @method     ChildFeatureTypeQuery groupByImageMaxHeight() Group by the image_max_height column
+ * @method     ChildFeatureTypeQuery groupByImageRatio() Group by the image_ratio column
  * @method     ChildFeatureTypeQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildFeatureTypeQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -73,6 +79,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFeatureType findOneByMax(double $max) Return the first ChildFeatureType filtered by the max column
  * @method     ChildFeatureType findOneByMin(double $min) Return the first ChildFeatureType filtered by the min column
  * @method     ChildFeatureType findOneByStep(double $step) Return the first ChildFeatureType filtered by the step column
+ * @method     ChildFeatureType findOneByImageMaxWidth(double $image_max_width) Return the first ChildFeatureType filtered by the image_max_width column
+ * @method     ChildFeatureType findOneByImageMaxHeight(double $image_max_height) Return the first ChildFeatureType filtered by the image_max_height column
+ * @method     ChildFeatureType findOneByImageRatio(double $image_ratio) Return the first ChildFeatureType filtered by the image_ratio column
  * @method     ChildFeatureType findOneByCreatedAt(string $created_at) Return the first ChildFeatureType filtered by the created_at column
  * @method     ChildFeatureType findOneByUpdatedAt(string $updated_at) Return the first ChildFeatureType filtered by the updated_at column
  *
@@ -86,6 +95,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findByMax(double $max) Return ChildFeatureType objects filtered by the max column
  * @method     array findByMin(double $min) Return ChildFeatureType objects filtered by the min column
  * @method     array findByStep(double $step) Return ChildFeatureType objects filtered by the step column
+ * @method     array findByImageMaxWidth(double $image_max_width) Return ChildFeatureType objects filtered by the image_max_width column
+ * @method     array findByImageMaxHeight(double $image_max_height) Return ChildFeatureType objects filtered by the image_max_height column
+ * @method     array findByImageRatio(double $image_ratio) Return ChildFeatureType objects filtered by the image_ratio column
  * @method     array findByCreatedAt(string $created_at) Return ChildFeatureType objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildFeatureType objects filtered by the updated_at column
  *
@@ -176,7 +188,7 @@ abstract class FeatureTypeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, SLUG, HAS_FEATURE_AV_VALUE, IS_MULTILINGUAL_FEATURE_AV_VALUE, PATTERN, CSS_CLASS, INPUT_TYPE, MAX, MIN, STEP, CREATED_AT, UPDATED_AT FROM feature_type WHERE ID = :p0';
+        $sql = 'SELECT ID, SLUG, HAS_FEATURE_AV_VALUE, IS_MULTILINGUAL_FEATURE_AV_VALUE, PATTERN, CSS_CLASS, INPUT_TYPE, MAX, MIN, STEP, IMAGE_MAX_WIDTH, IMAGE_MAX_HEIGHT, IMAGE_RATIO, CREATED_AT, UPDATED_AT FROM feature_type WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -625,6 +637,129 @@ abstract class FeatureTypeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(FeatureTypeTableMap::STEP, $step, $comparison);
+    }
+
+    /**
+     * Filter the query on the image_max_width column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByImageMaxWidth(1234); // WHERE image_max_width = 1234
+     * $query->filterByImageMaxWidth(array(12, 34)); // WHERE image_max_width IN (12, 34)
+     * $query->filterByImageMaxWidth(array('min' => 12)); // WHERE image_max_width > 12
+     * </code>
+     *
+     * @param     mixed $imageMaxWidth The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFeatureTypeQuery The current query, for fluid interface
+     */
+    public function filterByImageMaxWidth($imageMaxWidth = null, $comparison = null)
+    {
+        if (is_array($imageMaxWidth)) {
+            $useMinMax = false;
+            if (isset($imageMaxWidth['min'])) {
+                $this->addUsingAlias(FeatureTypeTableMap::IMAGE_MAX_WIDTH, $imageMaxWidth['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($imageMaxWidth['max'])) {
+                $this->addUsingAlias(FeatureTypeTableMap::IMAGE_MAX_WIDTH, $imageMaxWidth['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(FeatureTypeTableMap::IMAGE_MAX_WIDTH, $imageMaxWidth, $comparison);
+    }
+
+    /**
+     * Filter the query on the image_max_height column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByImageMaxHeight(1234); // WHERE image_max_height = 1234
+     * $query->filterByImageMaxHeight(array(12, 34)); // WHERE image_max_height IN (12, 34)
+     * $query->filterByImageMaxHeight(array('min' => 12)); // WHERE image_max_height > 12
+     * </code>
+     *
+     * @param     mixed $imageMaxHeight The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFeatureTypeQuery The current query, for fluid interface
+     */
+    public function filterByImageMaxHeight($imageMaxHeight = null, $comparison = null)
+    {
+        if (is_array($imageMaxHeight)) {
+            $useMinMax = false;
+            if (isset($imageMaxHeight['min'])) {
+                $this->addUsingAlias(FeatureTypeTableMap::IMAGE_MAX_HEIGHT, $imageMaxHeight['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($imageMaxHeight['max'])) {
+                $this->addUsingAlias(FeatureTypeTableMap::IMAGE_MAX_HEIGHT, $imageMaxHeight['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(FeatureTypeTableMap::IMAGE_MAX_HEIGHT, $imageMaxHeight, $comparison);
+    }
+
+    /**
+     * Filter the query on the image_ratio column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByImageRatio(1234); // WHERE image_ratio = 1234
+     * $query->filterByImageRatio(array(12, 34)); // WHERE image_ratio IN (12, 34)
+     * $query->filterByImageRatio(array('min' => 12)); // WHERE image_ratio > 12
+     * </code>
+     *
+     * @param     mixed $imageRatio The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFeatureTypeQuery The current query, for fluid interface
+     */
+    public function filterByImageRatio($imageRatio = null, $comparison = null)
+    {
+        if (is_array($imageRatio)) {
+            $useMinMax = false;
+            if (isset($imageRatio['min'])) {
+                $this->addUsingAlias(FeatureTypeTableMap::IMAGE_RATIO, $imageRatio['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($imageRatio['max'])) {
+                $this->addUsingAlias(FeatureTypeTableMap::IMAGE_RATIO, $imageRatio['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(FeatureTypeTableMap::IMAGE_RATIO, $imageRatio, $comparison);
     }
 
     /**
