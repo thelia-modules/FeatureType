@@ -20,6 +20,7 @@ use Propel\Runtime\ActiveQuery\Join;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Hook\BaseHook;
+use Thelia\Core\Template\ParserContext;
 use Thelia\Core\Thelia;
 use Thelia\Model\FeatureAv;
 use Thelia\Model\FeatureAvQuery;
@@ -51,13 +52,19 @@ class FeatureEditHook extends BaseHook
     {
         $data = self::hydrateForm($event->getArgument('feature_id'));
 
-        $form = new FeatureTypeAvMetaUpdateForm(
-            $this->getRequest(),
-            'form',
-            $data,
-            array(),
-            $this->container
-        );
+        /** @var ParserContext $parserContext */
+        $parserContext = $this->container->get('thelia.parser.context');
+        $form = $parserContext->getForm('feature_type_av_meta.update', FeatureTypeAvMetaUpdateForm::class, 'form');
+
+        if (!$form) {
+            $form = new FeatureTypeAvMetaUpdateForm(
+                $this->getRequest(),
+                'form',
+                $data,
+                array(),
+                $this->container
+            );
+        }
 
         $this->container->get('thelia.parser.context')->addForm($form);
 

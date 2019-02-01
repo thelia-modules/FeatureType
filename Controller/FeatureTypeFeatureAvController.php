@@ -10,12 +10,19 @@ namespace FeatureType\Controller;
 
 use FeatureType\Event\FeatureTypeEvents;
 use FeatureType\Event\FeatureTypeAvMetaEvent;
+use FeatureType\FeatureType;
+use FeatureType\Form\FeatureTypeAvMetaUpdateForm;
 use FeatureType\Model\FeatureFeatureType;
 use FeatureType\Model\FeatureFeatureTypeQuery;
 use FeatureType\Model\FeatureTypeAvMeta;
 use FeatureType\Model\FeatureTypeAvMetaQuery;
+use FeatureType\Model\FeatureTypeQuery;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Translation\Translator;
+use Thelia\Files\Exception\ProcessFileException;
 use Thelia\Model\Lang;
 use Thelia\Model\LangQuery;
 
@@ -52,22 +59,100 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
             foreach ($featureAvs as $featureAvId => $featureAv) {
                 foreach ($featureAv['lang'] as $langId => $lang) {
                     foreach ($lang['feature_type'] as $featureTypeId => $value) {
-                        $this->dispatchEvent(
-                            $this->getFeatureFeatureType($featureTypeId, $feature_id),
-                            $featureAvId,
-                            $langId,
-                            $value
-                        );
+                        $values = [];
+                        $values[$langId] = $value;
+                        $featureType = FeatureTypeQuery::create()
+                            ->findOneById($featureTypeId);
+
+                        if ($featureType->getInputType() === "image") {
+                            if (null === $value) {
+                                continue;
+                            }
+
+                            $uploadedFileName = $this->uploadFile($value);
+                            $values[$langId] = $uploadedFileName;
+
+                            if (!$featureType->getIsMultilingualFeatureAvValue()) {
+                                $activeLangs = LangQuery::create()
+                                    ->filterByActive(1)
+                                    ->find();
+
+                                /** @var Lang $lang */
+                                foreach ($activeLangs as $lang) {
+                                    $values[$lang->getId()] = $uploadedFileName;
+                                }
+                            }
+                        }
+
+                        foreach ($values as $langId => $langValue) {
+                            $this->dispatchEvent(
+                                $this->getFeatureFeatureType($featureTypeId, $feature_id),
+                                $featureAvId,
+                                $langId,
+                                $langValue
+                            );
+                        }
                     }
                 }
             }
 
+            $this->resetUpdateForm();
             return $this->generateSuccessRedirect($form);
         } catch (\Exception $e) {
             $this->setupFormErrorContext(
                 $this->getTranslator()->trans("%obj modification", array('%obj' => $this->objectName)),
                 $e->getMessage(),
-                $form
+                $form,
+                $e
+            );
+
+            return $this->viewFeature($feature_id);
+        }
+    }
+
+    public function deleteMetaAction($feature_id, $feature_type_id, $feature_av_id, $lang_id)
+    {
+        if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::DELETE)) {
+            return $response;
+        }
+
+        $form = $this->createForm("feature_type.delete");
+
+        try {
+             $this->validateForm($form);
+
+            $featureType = FeatureTypeQuery::create()
+                ->findOneById($feature_type_id);
+
+            $featureFeatureType =  $this->getFeatureFeatureType($feature_type_id, $feature_id);
+
+            $eventName = FeatureTypeEvents::FEATURE_TYPE_AV_META_DELETE;
+
+            $featureAvMetaQuery = FeatureTypeAvMetaQuery::create()
+                ->filterByFeatureAvId($feature_av_id)
+                ->filterByFeatureFeatureTypeId($featureFeatureType->getId());
+
+            if ($featureType->getIsMultilingualFeatureAvValue()) {
+                $featureAvMetaQuery->filterByLocale($this->getLocale($lang_id));
+            }
+
+            $featureAvMetas = $featureAvMetaQuery->find();
+
+            foreach ($featureAvMetas as $featureAvMeta) {
+                $this->dispatch(
+                    $eventName,
+                    (new FeatureTypeAvMetaEvent($featureAvMeta))
+                );
+            }
+
+            $this->resetUpdateForm();
+            return $this->generateSuccessRedirect($form);
+        } catch (\Exception $e) {
+            $this->setupFormErrorContext(
+                $this->getTranslator()->trans("%obj modification", array('%obj' => $this->objectName)),
+                $e->getMessage(),
+                $form,
+                $e
             );
 
             return $this->viewFeature($feature_id);
@@ -147,5 +232,79 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
         }
 
         return $this->langs[$langId]->getLocale();
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @return string
+     */
+    protected function uploadFile(UploadedFile $file)
+    {
+        if ($file->getError() == UPLOAD_ERR_INI_SIZE) {
+            $message = $this->getTranslator()
+                ->trans(
+                    'File is too large, please retry with a file having a size less than %size%.',
+                    array('%size%' => ini_get('upload_max_filesize')),
+                    'core'
+                );
+
+            throw new ProcessFileException($message, 403);
+        }
+
+        $validMimeTypes = [
+            'image/jpeg' => ["jpg", "jpeg"],
+            'image/png' => ["png"],
+            'image/gif' => ["gif"]
+        ];
+        $mimeType = $file->getMimeType();
+        if (!isset($validMimeTypes[$mimeType])) {
+            $message = $this->getTranslator()
+                ->trans(
+                    'Only files having the following mime type are allowed: %types%',
+                    [ '%types%' => implode(', ', array_keys($validMimeTypes))]
+                );
+
+            throw new ProcessFileException($message, 415);
+        }
+
+        $regex = "#^(.+)\.(".implode("|", $validMimeTypes[$mimeType]).")$#i";
+
+        $realFileName = $file->getClientOriginalName();
+        if (!preg_match($regex, $realFileName)) {
+            $message = $this->getTranslator()
+                ->trans(
+                    "There's a conflict between your file extension \"%ext\" and the mime type \"%mime\"",
+                    [
+                        '%mime' => $mimeType,
+                        '%ext' => $file->getClientOriginalExtension()
+                    ]
+                );
+
+            throw new ProcessFileException($message, 415);
+        }
+
+        $fileSystem = new Filesystem();
+        $fileSystem->mkdir(THELIA_WEB_DIR. DS .FeatureType::FEATURE_TYPE_AV_IMAGE_FOLDER);
+
+        $fileName = $this->generateUniqueFileName().'_'.$realFileName;
+        $file->move(THELIA_WEB_DIR. DS .FeatureType::FEATURE_TYPE_AV_IMAGE_FOLDER, $fileName);
+        return DS . FeatureType::FEATURE_TYPE_AV_IMAGE_FOLDER. DS .$fileName;
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateUniqueFileName()
+    {
+        // md5() reduces the similarity of the file names generated by
+        // uniqid(), which is based on timestamps
+        return substr(md5(uniqid()), 0, 10);
+    }
+
+    protected function resetUpdateForm() {
+        $this->getParserContext()->remove(FeatureTypeAvMetaUpdateForm::class.':form');
+        $theliaFormErrors = $this->getRequest()->getSession()->get('thelia.form-errors');
+        unset($theliaFormErrors[FeatureTypeAvMetaUpdateForm::class.':form']);
+        $this->getRequest()->getSession()->set('thelia.form-errors', $theliaFormErrors);
     }
 }

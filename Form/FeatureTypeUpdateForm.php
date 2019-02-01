@@ -9,7 +9,7 @@
 namespace FeatureType\Form;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Class FeatureTypeUpdateForm

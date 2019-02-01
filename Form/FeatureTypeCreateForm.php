@@ -12,7 +12,7 @@ use FeatureType\Model\FeatureTypeQuery;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Callback;
 use FeatureType\FeatureType;
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Thelia\Core\Translation\Translator;
 
 /**
@@ -127,7 +127,8 @@ class FeatureTypeCreateForm extends FeatureTypeForm
                     'color'   => Translator::getInstance()->trans('Type color', array(), FeatureType::MODULE_DOMAIN),
                     'number'   => Translator::getInstance()->trans('Type number', array(), FeatureType::MODULE_DOMAIN),
                     'range'   => Translator::getInstance()->trans('Type range', array(), FeatureType::MODULE_DOMAIN),
-                    'url'   => Translator::getInstance()->trans('Type url', array(), FeatureType::MODULE_DOMAIN)
+                    'url'   => Translator::getInstance()->trans('Type url', array(), FeatureType::MODULE_DOMAIN),
+                    'image'   => Translator::getInstance()->trans('Type image', array(), FeatureType::MODULE_DOMAIN)
                 )
             ))
             ->add('min', 'text', array(
@@ -149,6 +150,27 @@ class FeatureTypeCreateForm extends FeatureTypeForm
                 'label' => Translator::getInstance()->trans('Input step', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'step'
+                )
+            ))
+            ->add('image_max_width', 'number', array(
+                'required' => true,
+                'label' => Translator::getInstance()->trans('Image max width', array(), FeatureType::MODULE_DOMAIN),
+                'label_attr' => array(
+                    'for' => 'image_max_width'
+                )
+            ))
+            ->add('image_max_height', 'number', array(
+                'required' => true,
+                'label' => Translator::getInstance()->trans('Image max height', array(), FeatureType::MODULE_DOMAIN),
+                'label_attr' => array(
+                    'for' => 'image_max_height'
+                )
+            ))
+            ->add('image_ratio', 'number', array(
+                'required' => true,
+                'label' => Translator::getInstance()->trans('Image ratio', array(), FeatureType::MODULE_DOMAIN),
+                'label_attr' => array(
+                    'for' => 'image_ratio'
                 )
             ));
     }

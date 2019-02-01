@@ -162,6 +162,9 @@ class FeatureTypeLoop extends BaseI18nLoop implements PropelSearchLoopInterface
                 ->set("MIN", $entry->getMin())
                 ->set("MAX", $entry->getMax())
                 ->set("STEP", $entry->getStep())
+                ->set("IMAGE_MAX_WIDTH", $entry->getImageMaxWidth())
+                ->set("IMAGE_MAX_HEIGHT", $entry->getImageMaxHeight())
+                ->set("IMAGE_RATIO", $entry->getImageRatio())
                 ->set("IS_MULTILINGUAL_FEATURE_AV_VALUE", $entry->getIsMultilingualFeatureAvValue())
                 ->set("HAS_FEATURE_AV_VALUE", $entry->getHasFeatureAvValue())
             ;

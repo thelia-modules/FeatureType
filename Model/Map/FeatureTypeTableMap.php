@@ -58,7 +58,7 @@ class FeatureTypeTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 12;
+    const NUM_COLUMNS = 15;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class FeatureTypeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 12;
+    const NUM_HYDRATE_COLUMNS = 15;
 
     /**
      * the column name for the ID field
@@ -121,6 +121,21 @@ class FeatureTypeTableMap extends TableMap
     const STEP = 'feature_type.STEP';
 
     /**
+     * the column name for the IMAGE_MAX_WIDTH field
+     */
+    const IMAGE_MAX_WIDTH = 'feature_type.IMAGE_MAX_WIDTH';
+
+    /**
+     * the column name for the IMAGE_MAX_HEIGHT field
+     */
+    const IMAGE_MAX_HEIGHT = 'feature_type.IMAGE_MAX_HEIGHT';
+
+    /**
+     * the column name for the IMAGE_RATIO field
+     */
+    const IMAGE_RATIO = 'feature_type.IMAGE_RATIO';
+
+    /**
      * the column name for the CREATED_AT field
      */
     const CREATED_AT = 'feature_type.CREATED_AT';
@@ -151,12 +166,12 @@ class FeatureTypeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Slug', 'HasFeatureAvValue', 'IsMultilingualFeatureAvValue', 'Pattern', 'CssClass', 'InputType', 'Max', 'Min', 'Step', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'slug', 'hasFeatureAvValue', 'isMultilingualFeatureAvValue', 'pattern', 'cssClass', 'inputType', 'max', 'min', 'step', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(FeatureTypeTableMap::ID, FeatureTypeTableMap::SLUG, FeatureTypeTableMap::HAS_FEATURE_AV_VALUE, FeatureTypeTableMap::IS_MULTILINGUAL_FEATURE_AV_VALUE, FeatureTypeTableMap::PATTERN, FeatureTypeTableMap::CSS_CLASS, FeatureTypeTableMap::INPUT_TYPE, FeatureTypeTableMap::MAX, FeatureTypeTableMap::MIN, FeatureTypeTableMap::STEP, FeatureTypeTableMap::CREATED_AT, FeatureTypeTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'SLUG', 'HAS_FEATURE_AV_VALUE', 'IS_MULTILINGUAL_FEATURE_AV_VALUE', 'PATTERN', 'CSS_CLASS', 'INPUT_TYPE', 'MAX', 'MIN', 'STEP', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'slug', 'has_feature_av_value', 'is_multilingual_feature_av_value', 'pattern', 'css_class', 'input_type', 'max', 'min', 'step', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id', 'Slug', 'HasFeatureAvValue', 'IsMultilingualFeatureAvValue', 'Pattern', 'CssClass', 'InputType', 'Max', 'Min', 'Step', 'ImageMaxWidth', 'ImageMaxHeight', 'ImageRatio', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'slug', 'hasFeatureAvValue', 'isMultilingualFeatureAvValue', 'pattern', 'cssClass', 'inputType', 'max', 'min', 'step', 'imageMaxWidth', 'imageMaxHeight', 'imageRatio', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(FeatureTypeTableMap::ID, FeatureTypeTableMap::SLUG, FeatureTypeTableMap::HAS_FEATURE_AV_VALUE, FeatureTypeTableMap::IS_MULTILINGUAL_FEATURE_AV_VALUE, FeatureTypeTableMap::PATTERN, FeatureTypeTableMap::CSS_CLASS, FeatureTypeTableMap::INPUT_TYPE, FeatureTypeTableMap::MAX, FeatureTypeTableMap::MIN, FeatureTypeTableMap::STEP, FeatureTypeTableMap::IMAGE_MAX_WIDTH, FeatureTypeTableMap::IMAGE_MAX_HEIGHT, FeatureTypeTableMap::IMAGE_RATIO, FeatureTypeTableMap::CREATED_AT, FeatureTypeTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'SLUG', 'HAS_FEATURE_AV_VALUE', 'IS_MULTILINGUAL_FEATURE_AV_VALUE', 'PATTERN', 'CSS_CLASS', 'INPUT_TYPE', 'MAX', 'MIN', 'STEP', 'IMAGE_MAX_WIDTH', 'IMAGE_MAX_HEIGHT', 'IMAGE_RATIO', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'slug', 'has_feature_av_value', 'is_multilingual_feature_av_value', 'pattern', 'css_class', 'input_type', 'max', 'min', 'step', 'image_max_width', 'image_max_height', 'image_ratio', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -166,12 +181,12 @@ class FeatureTypeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Slug' => 1, 'HasFeatureAvValue' => 2, 'IsMultilingualFeatureAvValue' => 3, 'Pattern' => 4, 'CssClass' => 5, 'InputType' => 6, 'Max' => 7, 'Min' => 8, 'Step' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'slug' => 1, 'hasFeatureAvValue' => 2, 'isMultilingualFeatureAvValue' => 3, 'pattern' => 4, 'cssClass' => 5, 'inputType' => 6, 'max' => 7, 'min' => 8, 'step' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
-        self::TYPE_COLNAME       => array(FeatureTypeTableMap::ID => 0, FeatureTypeTableMap::SLUG => 1, FeatureTypeTableMap::HAS_FEATURE_AV_VALUE => 2, FeatureTypeTableMap::IS_MULTILINGUAL_FEATURE_AV_VALUE => 3, FeatureTypeTableMap::PATTERN => 4, FeatureTypeTableMap::CSS_CLASS => 5, FeatureTypeTableMap::INPUT_TYPE => 6, FeatureTypeTableMap::MAX => 7, FeatureTypeTableMap::MIN => 8, FeatureTypeTableMap::STEP => 9, FeatureTypeTableMap::CREATED_AT => 10, FeatureTypeTableMap::UPDATED_AT => 11, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'SLUG' => 1, 'HAS_FEATURE_AV_VALUE' => 2, 'IS_MULTILINGUAL_FEATURE_AV_VALUE' => 3, 'PATTERN' => 4, 'CSS_CLASS' => 5, 'INPUT_TYPE' => 6, 'MAX' => 7, 'MIN' => 8, 'STEP' => 9, 'CREATED_AT' => 10, 'UPDATED_AT' => 11, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'slug' => 1, 'has_feature_av_value' => 2, 'is_multilingual_feature_av_value' => 3, 'pattern' => 4, 'css_class' => 5, 'input_type' => 6, 'max' => 7, 'min' => 8, 'step' => 9, 'created_at' => 10, 'updated_at' => 11, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Slug' => 1, 'HasFeatureAvValue' => 2, 'IsMultilingualFeatureAvValue' => 3, 'Pattern' => 4, 'CssClass' => 5, 'InputType' => 6, 'Max' => 7, 'Min' => 8, 'Step' => 9, 'ImageMaxWidth' => 10, 'ImageMaxHeight' => 11, 'ImageRatio' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'slug' => 1, 'hasFeatureAvValue' => 2, 'isMultilingualFeatureAvValue' => 3, 'pattern' => 4, 'cssClass' => 5, 'inputType' => 6, 'max' => 7, 'min' => 8, 'step' => 9, 'imageMaxWidth' => 10, 'imageMaxHeight' => 11, 'imageRatio' => 12, 'createdAt' => 13, 'updatedAt' => 14, ),
+        self::TYPE_COLNAME       => array(FeatureTypeTableMap::ID => 0, FeatureTypeTableMap::SLUG => 1, FeatureTypeTableMap::HAS_FEATURE_AV_VALUE => 2, FeatureTypeTableMap::IS_MULTILINGUAL_FEATURE_AV_VALUE => 3, FeatureTypeTableMap::PATTERN => 4, FeatureTypeTableMap::CSS_CLASS => 5, FeatureTypeTableMap::INPUT_TYPE => 6, FeatureTypeTableMap::MAX => 7, FeatureTypeTableMap::MIN => 8, FeatureTypeTableMap::STEP => 9, FeatureTypeTableMap::IMAGE_MAX_WIDTH => 10, FeatureTypeTableMap::IMAGE_MAX_HEIGHT => 11, FeatureTypeTableMap::IMAGE_RATIO => 12, FeatureTypeTableMap::CREATED_AT => 13, FeatureTypeTableMap::UPDATED_AT => 14, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'SLUG' => 1, 'HAS_FEATURE_AV_VALUE' => 2, 'IS_MULTILINGUAL_FEATURE_AV_VALUE' => 3, 'PATTERN' => 4, 'CSS_CLASS' => 5, 'INPUT_TYPE' => 6, 'MAX' => 7, 'MIN' => 8, 'STEP' => 9, 'IMAGE_MAX_WIDTH' => 10, 'IMAGE_MAX_HEIGHT' => 11, 'IMAGE_RATIO' => 12, 'CREATED_AT' => 13, 'UPDATED_AT' => 14, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'slug' => 1, 'has_feature_av_value' => 2, 'is_multilingual_feature_av_value' => 3, 'pattern' => 4, 'css_class' => 5, 'input_type' => 6, 'max' => 7, 'min' => 8, 'step' => 9, 'image_max_width' => 10, 'image_max_height' => 11, 'image_ratio' => 12, 'created_at' => 13, 'updated_at' => 14, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -200,6 +215,9 @@ class FeatureTypeTableMap extends TableMap
         $this->addColumn('MAX', 'Max', 'FLOAT', false, null, null);
         $this->addColumn('MIN', 'Min', 'FLOAT', false, null, null);
         $this->addColumn('STEP', 'Step', 'FLOAT', false, null, null);
+        $this->addColumn('IMAGE_MAX_WIDTH', 'ImageMaxWidth', 'FLOAT', false, null, null);
+        $this->addColumn('IMAGE_MAX_HEIGHT', 'ImageMaxHeight', 'FLOAT', false, null, null);
+        $this->addColumn('IMAGE_RATIO', 'ImageRatio', 'FLOAT', false, null, null);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
@@ -386,6 +404,9 @@ class FeatureTypeTableMap extends TableMap
             $criteria->addSelectColumn(FeatureTypeTableMap::MAX);
             $criteria->addSelectColumn(FeatureTypeTableMap::MIN);
             $criteria->addSelectColumn(FeatureTypeTableMap::STEP);
+            $criteria->addSelectColumn(FeatureTypeTableMap::IMAGE_MAX_WIDTH);
+            $criteria->addSelectColumn(FeatureTypeTableMap::IMAGE_MAX_HEIGHT);
+            $criteria->addSelectColumn(FeatureTypeTableMap::IMAGE_RATIO);
             $criteria->addSelectColumn(FeatureTypeTableMap::CREATED_AT);
             $criteria->addSelectColumn(FeatureTypeTableMap::UPDATED_AT);
         } else {
@@ -399,6 +420,9 @@ class FeatureTypeTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.MAX');
             $criteria->addSelectColumn($alias . '.MIN');
             $criteria->addSelectColumn($alias . '.STEP');
+            $criteria->addSelectColumn($alias . '.IMAGE_MAX_WIDTH');
+            $criteria->addSelectColumn($alias . '.IMAGE_MAX_HEIGHT');
+            $criteria->addSelectColumn($alias . '.IMAGE_RATIO');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
