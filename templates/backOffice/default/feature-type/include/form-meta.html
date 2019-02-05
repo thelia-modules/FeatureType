@@ -105,7 +105,7 @@
                                                         <label class="feature_type_av_image_preview" for="{$SLUG}-{$feature_av_id}-{$lang_id}-{$ID}">
                                                             {if !$imageExist}
                                                                 <span id="{$SLUG}-{$feature_av_id}-{$lang_id}-{$ID}_upload" class="btn btn-success btn-upload">
-                                                                    <span class="glyphicon glyphicon-log-in"></span>
+                                                                    <span class="glyphicon glyphicon-upload"></span>
                                                                 </span>
                                                             {/if}
                                                             <img id="{$SLUG}-{$feature_av_id}-{$lang_id}-{$ID}_preview" class="{if !$imageExist} hidden {/if}" src="{$data[$feature_av_id]['lang'][$lang_id]['feature_type'][$ID]}" alt="">

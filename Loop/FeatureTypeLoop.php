@@ -118,8 +118,6 @@ class FeatureTypeLoop extends BaseI18nLoop implements PropelSearchLoopInterface
                     null,
                     \PDO::PARAM_INT
                 );
-
-            $query->addJoinObject($join);
         }
 
         foreach ($this->getOrder() as $order) {
