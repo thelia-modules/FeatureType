@@ -43,7 +43,7 @@ CREATE TABLE `feature_feature_type`
     `feature_type_id` INTEGER NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `feature_feature_type_unique` (`feature_id`, `feature_type_id`),
-    INDEX `FI_feature_feature_type_feature_type_id` (`feature_type_id`),
+    INDEX `fi_feature_feature_type_feature_type_id` (`feature_type_id`),
     CONSTRAINT `fk_feature_feature_type_feature_id`
         FOREIGN KEY (`feature_id`)
         REFERENCES `feature` (`id`)
@@ -68,12 +68,12 @@ CREATE TABLE `feature_type_av_meta`
     `feature_av_id` INTEGER NOT NULL,
     `feature_feature_type_id` INTEGER NOT NULL,
     `locale` VARCHAR(5) DEFAULT 'en_US' NOT NULL,
-    `value` VARCHAR(255),
+    `value` LONGTEXT,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `feature_type_av_meta_unique` (`feature_av_id`, `feature_feature_type_id`, `locale`),
-    INDEX `FI_feature_av_meta_feature_feature_type_id` (`feature_feature_type_id`),
+    INDEX `fi_feature_av_meta_feature_feature_type_id` (`feature_feature_type_id`),
     CONSTRAINT `fk_feature_av_meta_feature_av_id`
         FOREIGN KEY (`feature_av_id`)
         REFERENCES `feature_av` (`id`)
@@ -97,7 +97,7 @@ CREATE TABLE `feature_type_i18n`
     `title` VARCHAR(255),
     `description` LONGTEXT,
     PRIMARY KEY (`id`,`locale`),
-    CONSTRAINT `feature_type_i18n_FK_1`
+    CONSTRAINT `feature_type_i18n_fk_eb5a6f`
         FOREIGN KEY (`id`)
         REFERENCES `feature_type` (`id`)
         ON DELETE CASCADE
