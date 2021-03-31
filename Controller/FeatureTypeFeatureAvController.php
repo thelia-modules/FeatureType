@@ -18,7 +18,9 @@ use FeatureType\Model\FeatureTypeAvMeta;
 use FeatureType\Model\FeatureTypeAvMetaQuery;
 use FeatureType\Model\FeatureTypeQuery;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
@@ -43,13 +45,13 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
      * @param int $feature_id
      * @return null|\Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
      */
-    public function updateMetaAction($feature_id)
+    public function updateMetaAction(EventDispatcherInterface $eventDispatcher, $feature_id)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::UPDATE)) {
             return $response;
         }
 
-        $form = $this->createForm("feature_type_av_meta.update");
+        $form = $this->createForm("feature_type_av_meta-update");
 
         try {
             $formUpdate = $this->validateForm($form);
@@ -86,6 +88,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
 
                         foreach ($values as $langId => $langValue) {
                             $this->dispatchEvent(
+                                $eventDispatcher,
                                 $this->getFeatureFeatureType($featureTypeId, $feature_id),
                                 $featureAvId,
                                 $langId,
@@ -110,7 +113,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
         }
     }
 
-    public function deleteMetaAction($feature_id, $feature_type_id, $feature_av_id, $lang_id)
+    public function deleteMetaAction(EventDispatcherInterface $eventDispatcher, $feature_id, $feature_type_id, $feature_av_id, $lang_id)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::DELETE)) {
             return $response;
@@ -139,9 +142,9 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
             $featureAvMetas = $featureAvMetaQuery->find();
 
             foreach ($featureAvMetas as $featureAvMeta) {
-                $this->dispatch(
-                    $eventName,
-                    (new FeatureTypeAvMetaEvent($featureAvMeta))
+                $eventDispatcher->dispatch(
+                    (new FeatureTypeAvMetaEvent($featureAvMeta)),
+                    $eventName
                 );
             }
 
@@ -166,7 +169,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
      * @param string $value
      * @throws \Exception
      */
-    protected function dispatchEvent(FeatureFeatureType $featureFeatureType, $featureAvId, $langId, $value)
+    protected function dispatchEvent(EventDispatcherInterface $eventDispatcher, FeatureFeatureType $featureFeatureType, $featureAvId, $langId, $value)
     {
         $eventName = FeatureTypeEvents::FEATURE_TYPE_AV_META_UPDATE;
 
@@ -188,9 +191,9 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
 
         $featureAvMeta->setValue($value);
 
-        $this->dispatch(
-            $eventName,
-            (new FeatureTypeAvMetaEvent($featureAvMeta))
+        $eventDispatcher->dispatch(
+            (new FeatureTypeAvMetaEvent($featureAvMeta)),
+            $eventName
         );
     }
 

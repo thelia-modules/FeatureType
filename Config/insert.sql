@@ -8,5 +8,4 @@ INSERT INTO `feature_type_i18n` (`id`, `locale`, `title`, `description`) VALUES
 (@max_id + 1, 'en_US', 'Color', 'Color hexadecimal'),
 (@max_id + 1, 'es_ES', 'Color', 'Color hexadecimal'),
 (@max_id + 1, 'fr_FR', 'Couleur', 'Couleur hexadécimal'),
-(@max_id + 1, 'it_IT', 'Colore', 'Colore esadecimale'),
-(@max_id + 1, 'ru_RU', 'цвет', 'шестнадцатеричное цвета');
+(@max_id + 1, 'it_IT', 'Colore', 'Colore esadecimale');

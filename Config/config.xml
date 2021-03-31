@@ -17,7 +17,6 @@
         <form name="feature_type.delete" class="FeatureType\Form\FeatureTypeForm" />
         <form name="feature_type.create" class="FeatureType\Form\FeatureTypeCreateForm" />
         <form name="feature_type.update" class="FeatureType\Form\FeatureTypeUpdateForm" />
-        <form name="feature_type_av_meta.update" class="FeatureType\Form\FeatureTypeAvMetaUpdateForm" />
     </forms>
 
     <hooks>
@@ -25,6 +24,7 @@
             <tag name="hook.event_listener" event="feature-edit.bottom" type="back" method="onFeatureEditBottom"/>
             <tag name="hook.event_listener" event="feature.edit-js" type="back" method="onFeatureEditJs"/>
             <argument type="service" id="service_container" />
+            <argument type="service" id="thelia.form_factory" />
         </hook>
         <hook id="feature.type.configuration" class="FeatureType\Hook\ConfigurationHook" scope="request">
             <tag name="hook.event_listener" event="configuration.catalog-top" type="back" method="onConfigurationCatalogTop"/>

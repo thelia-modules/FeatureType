@@ -14,7 +14,9 @@ use FeatureType\Event\FeatureTypeEvent;
 use FeatureType\Event\FeatureTypeEvents;
 use FeatureType\Model\FeatureType;
 use FeatureType\FeatureType as FeatureTypeCore;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Form;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
@@ -63,6 +65,8 @@ class FeatureTypeController extends BaseAdminController
             ));
         }
 
+
+
         $title = array();
         $description = array();
 
@@ -74,7 +78,8 @@ class FeatureTypeController extends BaseAdminController
             }
         }
 
-        $form = $this->createForm('feature_type.update', 'form', array(
+
+        $form = $this->createForm('feature_type.update', FormType::class, array(
             'id' => $featureType->getId(),
             'slug' => $featureType->getSlug(),
             'pattern' => $featureType->getPattern(),
@@ -92,6 +97,8 @@ class FeatureTypeController extends BaseAdminController
             'description' => $description
         ));
 
+
+
         $this->getParserContext()->addForm($form);
 
         if ($this->getRequest()->isXmlHttpRequest()) {
@@ -106,7 +113,7 @@ class FeatureTypeController extends BaseAdminController
     /**
      * @return Response
      */
-    public function createAction()
+    public function createAction(EventDispatcherInterface $eventDispatcher)
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
@@ -115,11 +122,11 @@ class FeatureTypeController extends BaseAdminController
         $form = $this->createForm('feature_type.create');
 
         try {
-            $this->dispatch(
-                FeatureTypeEvents::FEATURE_TYPE_CREATE,
+            $eventDispatcher->dispatch(
                 new FeatureTypeEvent($this->hydrateFeatureTypeByForm(
                     $this->validateForm($form, 'POST')
-                ))
+                )),
+                FeatureTypeEvents::FEATURE_TYPE_CREATE
             );
 
             return $this->generateSuccessRedirect($form);
@@ -138,7 +145,7 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    public function updateAction($id)
+    public function updateAction(EventDispatcherInterface $eventDispatcher, $id)
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::UPDATE)) {
             return $response;
@@ -147,18 +154,17 @@ class FeatureTypeController extends BaseAdminController
         $form = $this->createForm('feature_type.update');
 
         try {
-            $this->dispatch(
-                FeatureTypeEvents::FEATURE_TYPE_UPDATE,
+            $eventDispatcher->dispatch(
                 new FeatureTypeEvent(
                     $this->hydrateFeatureTypeByForm(
                         $this->validateForm($form, 'POST'),
                         $id
                     )
-                )
+                ),
+                FeatureTypeEvents::FEATURE_TYPE_UPDATE
             );
 
             return $this->generateSuccessRedirect($form);
-
         } catch (\Exception $e) {
             $this->setupFormErrorContext(
                 $this->getTranslator()->trans("%obj modification", array('%obj' => $this->objectName)),
@@ -176,7 +182,7 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    public function deleteAction($id)
+    public function deleteAction(EventDispatcherInterface $eventDispatcher, $id)
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::DELETE)) {
             return $response;
@@ -195,9 +201,9 @@ class FeatureTypeController extends BaseAdminController
                 ));
             }
 
-            $this->dispatch(
-                FeatureTypeEvents::FEATURE_TYPE_DELETE,
-                new FeatureTypeEvent($featureType)
+            $eventDispatcher->dispatch(
+                new FeatureTypeEvent($featureType),
+                FeatureTypeEvents::FEATURE_TYPE_DELETE
             );
 
             return $this->generateSuccessRedirect($form);

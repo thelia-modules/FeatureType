@@ -10,6 +10,7 @@ namespace FeatureType\Form\Type;
 
 use FeatureType\FeatureType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Thelia\Core\Translation\Translator;
 
@@ -24,14 +25,14 @@ class I18nType extends AbstractType
     {
         $builder->add(
             'lang',
-            'collection',
+            CollectionType::class,
             array(
-                'type' => new FeatureTypeType(),
+                'entry_type' => FeatureTypeType::class,
+                'entry_options' => [
+                    'required' => true,
+                ],
                 'allow_add'    => true,
-                'allow_delete' => true,
-                'options' => array(
-                    'required' => true
-                )
+                'allow_delete' => true
             )
         );
     }

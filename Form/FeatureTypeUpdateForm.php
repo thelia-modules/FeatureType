@@ -8,6 +8,7 @@
 
 namespace FeatureType\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -21,7 +22,7 @@ class FeatureTypeUpdateForm extends FeatureTypeCreateForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'feature_type-update';
     }
@@ -37,7 +38,7 @@ class FeatureTypeUpdateForm extends FeatureTypeCreateForm
         parent::buildForm();
 
         $this->formBuilder
-            ->add('id', 'integer', array(
+            ->add('id', NumberType::class, array(
                 'required' => true,
                 'constraints' => array(
                     new NotBlank()

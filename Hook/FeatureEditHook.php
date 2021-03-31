@@ -17,8 +17,11 @@ use FeatureType\Model\Map\FeatureFeatureTypeTableMap;
 use FeatureType\Model\Map\FeatureTypeAvMetaTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\Join;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Thelia\Core\Event\Hook\HookRenderEvent;
+use Thelia\Core\Form\TheliaFormFactory;
 use Thelia\Core\Hook\BaseHook;
 use Thelia\Core\Template\ParserContext;
 use Thelia\Core\Thelia;
@@ -37,12 +40,16 @@ class FeatureEditHook extends BaseHook
     /** @var ContainerInterface */
     protected $container = null;
 
+    /** @var TheliaFormFactory */
+    protected $formFactory = null;
+
     /**
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, TheliaFormFactory $formFactory)
     {
         $this->container = $container;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -54,16 +61,10 @@ class FeatureEditHook extends BaseHook
 
         /** @var ParserContext $parserContext */
         $parserContext = $this->container->get('thelia.parser.context');
-        $form = $parserContext->getForm('feature_type_av_meta.update', FeatureTypeAvMetaUpdateForm::class, 'form');
+        $form = $parserContext->getForm('feature_type_av_meta-update', FeatureTypeAvMetaUpdateForm::class, 'form');
 
         if (!$form) {
-            $form = new FeatureTypeAvMetaUpdateForm(
-                $this->getRequest(),
-                'form',
-                $data,
-                array(),
-                $this->container
-            );
+            $form = $this->formFactory->createForm('feature_type_av_meta-update', FormType::class, $data);
         }
 
         $this->container->get('thelia.parser.context')->addForm($form);
@@ -82,13 +83,6 @@ class FeatureEditHook extends BaseHook
      */
     public function onFeatureEditJs(HookRenderEvent $event)
     {
-        // Fix for Thelia 2.1, because the hook "feature-edit.bottom" does not exist
-        if (version_compare(Thelia::THELIA_VERSION, '2.2', '<')) {
-            $event->add('<script type="text/template" id="feature-type-fix-t21">');
-            self::onFeatureEditBottom($event);
-            $event->add('</script>');
-        }
-
         $event->add($this->render(
             'feature-type/hook/feature-edit-js.html',
             array(

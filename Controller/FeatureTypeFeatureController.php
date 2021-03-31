@@ -9,6 +9,7 @@
 namespace FeatureType\Controller;
 
 use FeatureType\Model\FeatureTypeQuery;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Core\HttpFoundation\Response;
 use FeatureType\Event\FeatureTypeEvents;
 use FeatureType\Event\FeatureTypeEvent;
@@ -30,7 +31,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
      * @param int $feature_id
      * @return Response
      */
-    public function associateAction($feature_type_id, $feature_id)
+    public function associateAction(EventDispatcherInterface $eventDispatcher, $feature_type_id, $feature_id)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::UPDATE)) {
             return $response;
@@ -41,9 +42,9 @@ class FeatureTypeFeatureController extends FeatureTypeController
         try {
             $this->validateForm($form, 'POST');
 
-            $this->dispatch(
+            $eventDispatcher->dispatch(
+                $this->getEventAssociation($feature_type_id, $feature_id),
                 FeatureTypeEvents::FEATURE_TYPE_ASSOCIATE,
-                $this->getEventAssociation($feature_type_id, $feature_id)
             );
 
             return $this->generateSuccessRedirect($form);
@@ -63,7 +64,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
      * @param int $feature_id
      * @return Response
      */
-    public function dissociateAction($feature_type_id, $feature_id)
+    public function dissociateAction(EventDispatcherInterface $eventDispatcher, $feature_type_id, $feature_id)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::FEATURE), null, AccessManager::UPDATE)) {
             return $response;
@@ -74,9 +75,9 @@ class FeatureTypeFeatureController extends FeatureTypeController
         try {
             $this->validateForm($form, 'POST');
 
-            $this->dispatch(
-                FeatureTypeEvents::FEATURE_TYPE_DISSOCIATE,
-                $this->getEventAssociation($feature_type_id, $feature_id)
+            $eventDispatcher->dispatch(
+                $this->getEventAssociation($feature_type_id, $feature_id),
+                FeatureTypeEvents::FEATURE_TYPE_DISSOCIATE
             );
 
             return $this->generateSuccessRedirect($form);

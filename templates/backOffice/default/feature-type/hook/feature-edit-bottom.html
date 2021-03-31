@@ -23,7 +23,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {assign var="exclude_id" value=[]}
+                            {$exclude_id=[]}
                             {loop type="feature_type" name="feature_type" feature_id=$feature_id}
                             {$exclude_id[] = $ID}
                                 <tr>
@@ -55,6 +55,10 @@
                             </tbody>
                         </table>
 
+                        {if is_array($exclude_id)}
+                            {$exclude_id = implode(',', $exclude_id)}
+                        {/if}
+
                         {ifloop rel='feature_type_select'}
                         {form name="feature_type.associate"}
                             <form method="POST" class="js-form-associate" action="">
@@ -67,7 +71,7 @@
                                 <div class="input-group">
                                     <select class="form-control">
                                         <option value="">{intl l="Select an feature type" d="featuretype.bo.default"}</option>
-                                        {loop type="feature_type" name="feature_type_select" exclude_id=$exclude_id|implode:','}
+                                        {loop type="feature_type" name="feature_type_select" exclude_id=$exclude_id}
                                             <option value="{url path="/admin/feature-type/{$ID}/associate/{$feature_id}"}">({$SLUG}) - {$TITLE}</option>
                                         {/loop}
                                     </select>

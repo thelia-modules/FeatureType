@@ -9,6 +9,10 @@
 namespace FeatureType\Form;
 
 use FeatureType\Model\FeatureTypeQuery;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Callback;
 use FeatureType\FeatureType;
@@ -25,7 +29,7 @@ class FeatureTypeCreateForm extends FeatureTypeForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'feature_type-create';
     }
@@ -41,7 +45,7 @@ class FeatureTypeCreateForm extends FeatureTypeForm
         parent::buildForm();
 
         $this->formBuilder
-            ->add('slug', 'text', array(
+            ->add('slug', TextType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Slug', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
@@ -49,41 +53,31 @@ class FeatureTypeCreateForm extends FeatureTypeForm
                 ),
                 'constraints' => array(
                     new NotBlank(),
-                    new Callback(array(
-                        "methods" => array(
-                            array($this,
-                                "checkFormatType"),
-                            array($this,
-                                "checkExistType")
-                        )
-                    ))
+                    new Callback([$this, "checkFormatType"]),
+                    new Callback([$this, "checkExistType"])
                 )
             ))
-            ->add('title', 'collection', array(
-                'type' => 'text',
+            ->add('title', CollectionType::class, array(
+                'entry_type' => TextType::class,
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'label' => Translator::getInstance()->trans('Title'),
                 'label_attr' => array(
                     'for' => 'title'
                 ),
-                'options' => array(
-                    'required' => true
-                )
+                'required' => true
             ))
-            ->add('description', 'collection', array(
-                'type' => 'text',
+            ->add('description', CollectionType::class, array(
+                'entry_type' => TextType::class,
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'label_attr' => array(
                     'for' => 'description'
                 ),
                 'label' => Translator::getInstance()->trans('Description'),
-                'options' => array(
-                    'required' => true
-                )
+                'required' => true
             ))
-            ->add('has_feature_av_value', 'text', array(
+            ->add('has_feature_av_value', TextType::class, array(
                 'required' => false,
                 'empty_data' => false,
                 'label' => Translator::getInstance()->trans('Has feature av value', array(), FeatureType::MODULE_DOMAIN),
@@ -91,7 +85,7 @@ class FeatureTypeCreateForm extends FeatureTypeForm
                     'for' => 'has_feature_av_value'
                 )
             ))
-            ->add('is_multilingual_feature_av_value', 'text', array(
+            ->add('is_multilingual_feature_av_value', TextType::class, array(
                 'required' => false,
                 'empty_data' => false,
                 'label' => Translator::getInstance()->trans('Multilingual value', array(), FeatureType::MODULE_DOMAIN),
@@ -99,74 +93,74 @@ class FeatureTypeCreateForm extends FeatureTypeForm
                     'for' => 'is_multilingual_feature_av_value'
                 )
             ))
-            ->add('pattern', 'text', array(
+            ->add('pattern', TextType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Pattern', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'pattern'
                 )
             ))
-            ->add('css_class', 'text', array(
+            ->add('css_class', TextType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Input css class', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'css_class'
                 )
             ))
-            ->add('input_type', 'choice', array(
+            ->add('input_type', ChoiceType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Input type', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'input_type'
                 ),
-                'empty_value' => 'text',
+                'empty_data' => 'text',
                 'choices'   => array(
-                    'text'   => Translator::getInstance()->trans('Type text', array(), FeatureType::MODULE_DOMAIN),
-                    'boolean'   => Translator::getInstance()->trans('Type boolean', array(), FeatureType::MODULE_DOMAIN),
-                    'textarea'   => Translator::getInstance()->trans('Type textarea', array(), FeatureType::MODULE_DOMAIN),
-                    'color'   => Translator::getInstance()->trans('Type color', array(), FeatureType::MODULE_DOMAIN),
-                    'number'   => Translator::getInstance()->trans('Type number', array(), FeatureType::MODULE_DOMAIN),
-                    'range'   => Translator::getInstance()->trans('Type range', array(), FeatureType::MODULE_DOMAIN),
-                    'url'   => Translator::getInstance()->trans('Type url', array(), FeatureType::MODULE_DOMAIN),
-                    'image'   => Translator::getInstance()->trans('Type image', array(), FeatureType::MODULE_DOMAIN)
+                    Translator::getInstance()->trans('Type text', array(), FeatureType::MODULE_DOMAIN) => 'text',
+                    Translator::getInstance()->trans('Type boolean', array(), FeatureType::MODULE_DOMAIN) => 'boolean',
+                    Translator::getInstance()->trans('Type textarea', array(), FeatureType::MODULE_DOMAIN) => 'textarea',
+                    Translator::getInstance()->trans('Type color', array(), FeatureType::MODULE_DOMAIN) => 'color',
+                    Translator::getInstance()->trans('Type number', array(), FeatureType::MODULE_DOMAIN) => 'number',
+                    Translator::getInstance()->trans('Type range', array(), FeatureType::MODULE_DOMAIN) => 'range',
+                    Translator::getInstance()->trans('Type url', array(), FeatureType::MODULE_DOMAIN) => 'url',
+                    Translator::getInstance()->trans('Type image', array(), FeatureType::MODULE_DOMAIN) => 'image'
                 )
             ))
-            ->add('min', 'text', array(
+            ->add('min', TextType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Input min', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'min'
                 )
             ))
-            ->add('max', 'text', array(
+            ->add('max', TextType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Input max', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'max'
                 )
             ))
-            ->add('step', 'text', array(
+            ->add('step', TextType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Input step', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'step'
                 )
             ))
-            ->add('image_max_width', 'number', array(
+            ->add('image_max_width', NumberType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Image max width', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'image_max_width'
                 )
             ))
-            ->add('image_max_height', 'number', array(
+            ->add('image_max_height', NumberType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Image max height', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(
                     'for' => 'image_max_height'
                 )
             ))
-            ->add('image_ratio', 'number', array(
+            ->add('image_ratio', NumberType::class, array(
                 'required' => true,
                 'label' => Translator::getInstance()->trans('Image ratio', array(), FeatureType::MODULE_DOMAIN),
                 'label_attr' => array(

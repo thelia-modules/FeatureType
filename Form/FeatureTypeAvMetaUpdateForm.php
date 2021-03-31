@@ -11,6 +11,8 @@ namespace FeatureType\Form;
 use FeatureType\FeatureType;
 use FeatureType\Form\Type\I18nType;
 use FeatureType\Model\FeatureTypeQuery;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -27,7 +29,7 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'feature_type_av_meta-update';
     }
@@ -44,15 +46,11 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
 
             $this->formBuilder->add(
                 'feature_av',
-                'collection',
+                CollectionType::class,
                 array(
-                    'type' => new I18nType(),
+                    'entry_type' => I18nType::class,
                     'constraints' => array(
-                        new Callback(array(
-                            "methods" => array(
-                                array($this,
-                                    "checkImageSize"),
-                        ))
+                        new Callback(array($this, "checkImageSize"),
                     )),
                     'allow_add'    => true,
                     'allow_delete' => true,
@@ -60,15 +58,12 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
                         'for' => 'description'
                     ),
                     'label' => Translator::getInstance()->trans('Description', array(), FeatureType::MODULE_DOMAIN),
-                    'options' => array(
-                        'required' => true
-                    )
                 )
             );
 
             $this->formBuilder->add(
                 'feature_id',
-                'integer',
+                NumberType::class,
                 array(
                     'constraints' => array(
                         new NotBlank()
