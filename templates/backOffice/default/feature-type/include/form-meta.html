@@ -60,7 +60,7 @@
                             <tbody>
                             {$featureAvTitle=[]}
                             {loop type="feature-availability" name="feature_availability" feature=$feature_id lang=$lang_id}
-                                {$featureAvTitle[$ID] = $TITLE}
+                            {$featureAvTitle[$ID] = $TITLE}
                             {/loop}
 
                             {foreach from=$form_meta_data.feature_av key=feature_av_id item=foo}
@@ -80,7 +80,7 @@
                                                 <div class="input-group {if $error}has-error{/if}">
                                                     <textarea
                                                             class="form-control {$CSS_CLASS}"
-                                                            name="featuretype_form_feature_type_av_meta_update_form[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
+                                                            name="feature_type_av_meta-update[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
                                                             data-connector="{$SLUG}-{$feature_av_id}"
                                                             data-replicate={if !$IS_MULTILINGUAL_FEATURE_AV_VALUE}true{else}false{/if}
                                                       >{$dataFeatureTypeValue nofilter}</textarea>
@@ -89,7 +89,7 @@
                                                 <div class="input-group {if $error}has-error{/if}">
                                                     <select
                                                             class="form-control {$CSS_CLASS}"
-                                                            name="featuretype_form_feature_type_av_meta_update_form[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
+                                                            name="feature_type_av_meta-update[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
                                                             data-connector="{$SLUG}-{$feature_av_id}"
                                                             data-replicate={if !$IS_MULTILINGUAL_FEATURE_AV_VALUE}true{else}false{/if}
                                                     >
@@ -120,11 +120,11 @@
                                                     <input
                                                             id="{$SLUG}-{$feature_av_id}-{$lang_id}-{$ID}"
                                                             type="file"
-                                                               class="form-control {$CSS_CLASS} hidden"
-                                                               {if $PATTERN}pattern="{$PATTERN}"{/if}
-                                                               name="featuretype_form_feature_type_av_meta_update_form[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
-                                                               value="{$dataFeatureTypeValue}"
-                                                        >
+                                                            class="form-control {$CSS_CLASS} hidden"
+                                                            {if $PATTERN}pattern="{$PATTERN}"{/if}
+                                                            name="feature_type_av_meta-update[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
+                                                            value="{$dataFeatureTypeValue}"
+                                                    >
                                                 </div>
                                             {else}
                                                 <div class="input-group {if $error}has-error{/if}">
@@ -137,7 +137,7 @@
                                                                 {if $MAX}max="{$MAX}"{/if}
                                                                 {if $STEP}step="{$STEP}"{else}step="0.000001"{/if}
                                                             {/if}
-                                                           name="featuretype_form_feature_type_av_meta_update_form[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
+                                                           name="feature_type_av_meta-update[feature_av][{$feature_av_id}][lang][{$lang_id}][feature_type][{$ID}]"
                                                            value="{$dataFeatureTypeValue}"
                                                            data-connector="{$SLUG}-{$feature_av_id}"
                                                            data-replicate={if !$IS_MULTILINGUAL_FEATURE_AV_VALUE}true{else}false{/if}
@@ -158,11 +158,11 @@
             </div>
         </div>
         <div class="text-center">
-            <p id="form-meta-update-info" class="alert alert-warning hidden">{intl l="The data of the form have been modified, do not forget to validate these modifications !!!" d="featuretype.bo.default"}</p>
             <button type="submit" class="btn btn-success">
                 <span class="glyphicon glyphicon-floppy-disk"></span>
                 {intl l="Update action" d="featuretype.bo.default"}
             </button>
+            <p id="form-meta-update-info" class="alert alert-warning hidden">{intl l="The data of the form have been modified, do not forget to validate these modifications !!!" d="featuretype.bo.default"}</p>
         </div>
     </form>
 {/form}
