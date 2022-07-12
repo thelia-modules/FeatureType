@@ -39,7 +39,7 @@ class FeatureType extends BaseModule
      */
     public function postActivation(ConnectionInterface $con = null)
     {
-        if (!self::getConfigValue('is_initialized', false)) {
+        if (! self::getConfigValue('is_initialized', false)) {
             $database = new Database($con);
             $database->insertSql(null, [__DIR__ . "/Config/thelia.sql", __DIR__ . "/Config/insert.sql"]);
             self::setConfigValue('is_initialized', true);
