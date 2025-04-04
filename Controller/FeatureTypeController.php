@@ -348,7 +348,7 @@ class FeatureTypeController extends BaseAdminController
             return $response;
         }
 
-        $currentLang = $request->getSession()?->get("thelia.current.admin_lang")->getLocale();
+        $currentLang = $request->getSession()?->get("thelia.admin.edition.lang")->getLocale();
 
         try {
             $features = FeatureAvQuery::create()
@@ -357,6 +357,7 @@ class FeatureTypeController extends BaseAdminController
                 ->getData();
 
             $langs = LangQuery::create()
+                ->filterByActive(1)
                 ->find()
                 ->getData();
 
