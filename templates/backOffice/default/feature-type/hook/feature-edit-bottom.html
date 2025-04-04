@@ -6,7 +6,7 @@
         </div>
         <div class="form-container">
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="well well-sm">
                         <table class="table table-striped">
                             <thead>
@@ -98,7 +98,23 @@
                         </span>
                     </div>
                 </div>
-                <div class="col-md-{if {count name="feature_type" type="feature_type" feature_id=$feature_id} > 2}12{else}7{/if}">
+                <div class="col-md-6">
+                    <div class="well well-sm">
+                        <div class="alert alert-info">
+                            {intl l="This feature duplicates the values of the French feature in other languages" d="featuretype.bo.default"}
+                        </div>
+                        {form name="feature_type_duplicate"}
+                            <form action="{url path="/admin/module/feature-type/duplicate/feature/{$smarty.get.feature_id}"}" method="post" enctype="multipart/form-data">
+                                <button type="submit" class="btn btn-success">
+                                    {intl l="Duplicate characteristic values" d="featuretype.bo.default"}
+                                </button>
+                            </form>
+                        {/form}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
                     <div class="well well-sm">
                         {include file="feature-type/include/form-meta.html"}
                     </div>

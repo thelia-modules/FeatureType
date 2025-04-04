@@ -14,15 +14,20 @@ use FeatureType\Event\FeatureTypeEvent;
 use FeatureType\Event\FeatureTypeEvents;
 use FeatureType\Model\FeatureType;
 use FeatureType\FeatureType as FeatureTypeCore;
+use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
-use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
+use Thelia\Model\FeatureAvI18n;
+use Thelia\Model\FeatureAvI18nQuery;
+use Thelia\Model\FeatureAvQuery;
 use Thelia\Model\LangQuery;
 use Thelia\Core\HttpFoundation\Response;
+use Thelia\Tools\URL;
 
 /**
  * Class FeatureTypeController
@@ -330,5 +335,66 @@ class FeatureTypeController extends BaseAdminController
         return $this->render("feature-edit", array(
             'feature_id' => $id
         ));
+    }
+
+    /**
+     * @throws PropelException
+     */
+    #[Route('/admin/module/feature-type/duplicate/feature/{id}', name: 'featuretype_duplicate', methods: ['POST'])]
+    public function duplicateFeature(int $id)
+    {
+        if (null !== $response = $this->checkAuth(array(), 'AttributeType', AccessManager::CREATE)) {
+            return $response;
+        }
+
+        try {
+            $features = FeatureAvQuery::create()
+                ->filterByFeatureId($id)
+                ->find()
+                ->getData();
+
+            $langs = LangQuery::create()
+                ->find()
+                ->getData();
+
+            $locales = array_filter(
+                array_map(static fn($lang) => $lang->getLocale(), $langs),
+                static fn($locale) => $locale !== 'fr_FR'
+            );
+
+            foreach ($features as $feature) {
+                $title = FeatureAvI18nQuery::create()
+                    ->filterByLocale('fr_FR')
+                    ->filterById($feature->getId())
+                    ->findOne()
+                    ?->getTitle();
+
+                foreach ($locales as $locale) {
+                    $existing = FeatureAvI18nQuery::create()
+                        ->filterByLocale($locale)
+                        ->filterById($feature->getId())
+                        ->findOne();
+
+                    if ($existing === null || $existing->getTitle() === null || $existing->getTitle() === '') {
+                        $featureAvI18n = $existing ?? new FeatureAvI18n();
+                        $featureAvI18n
+                            ->setId($feature->getId())
+                            ->setTitle($title)
+                            ->setLocale($locale)
+                            ->save();
+                    }
+                }
+            }
+
+        } catch (\Exception $e) {
+            $this->setupFormErrorContext(
+                Translator::getInstance()?->trans("%obj modification", ['%obj' => $this->objectName]),
+                $e->getMessage()
+            );
+        }
+
+        return $this->generateRedirect(
+            URL::getInstance()?->absoluteUrl("/admin/configuration/features/update?feature_id=" . $id)
+        );
     }
 }
