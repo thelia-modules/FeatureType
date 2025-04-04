@@ -20,6 +20,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Controller\Admin\BaseAdminController;
+use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\FeatureAvI18n;
@@ -256,10 +257,10 @@ class FeatureTypeController extends BaseAdminController
 
         $form = $this->createForm('feature_type.create', 'form', array(
             'slug' => $featureType->getSlug() . '_' . Translator::getInstance()->trans(
-                'copy',
-                array(),
-                FeatureTypeCore::MODULE_DOMAIN
-            ),
+                    'copy',
+                    array(),
+                    FeatureTypeCore::MODULE_DOMAIN
+                ),
             'pattern' => $featureType->getPattern(),
             'css_class' => $featureType->getCssClass(),
             'has_feature_av_value' => $featureType->getHasFeatureAvValue(),
@@ -341,11 +342,13 @@ class FeatureTypeController extends BaseAdminController
      * @throws PropelException
      */
     #[Route('/admin/module/feature-type/duplicate/feature/{id}', name: 'featuretype_duplicate', methods: ['POST'])]
-    public function duplicateFeature(int $id)
+    public function duplicateFeature(int $id, Request $request)
     {
         if (null !== $response = $this->checkAuth(array(), 'AttributeType', AccessManager::CREATE)) {
             return $response;
         }
+
+        $currentLang = $request->getSession()?->get("thelia.current.admin_lang")->getLocale();
 
         try {
             $features = FeatureAvQuery::create()
@@ -359,12 +362,12 @@ class FeatureTypeController extends BaseAdminController
 
             $locales = array_filter(
                 array_map(static fn($lang) => $lang->getLocale(), $langs),
-                static fn($locale) => $locale !== 'fr_FR'
+                static fn($locale) => $locale !== $currentLang
             );
 
             foreach ($features as $feature) {
                 $title = FeatureAvI18nQuery::create()
-                    ->filterByLocale('fr_FR')
+                    ->filterByLocale($currentLang)
                     ->filterById($feature->getId())
                     ->findOne()
                     ?->getTitle();
