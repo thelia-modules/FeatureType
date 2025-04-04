@@ -103,13 +103,11 @@
                         <div class="alert alert-info">
                             {intl l="This feature duplicates the values of the French feature in other languages" d="featuretype.bo.default"}
                         </div>
-                        {form name="feature_type_duplicate"}
-                            <form action="{url path="/admin/module/feature-type/duplicate/feature/{$smarty.get.feature_id}"}" method="post" enctype="multipart/form-data">
-                                <button type="submit" class="btn btn-success">
-                                    {intl l="Duplicate characteristic values" d="featuretype.bo.default"}
-                                </button>
-                            </form>
-                        {/form}
+                        <form action="{url path="/admin/module/feature-type/duplicate/feature/{$smarty.get.feature_id}"}" method="post" enctype="multipart/form-data">
+                            <button type="submit" class="btn btn-success">
+                                {intl l="Duplicate characteristic values" d="featuretype.bo.default"}
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
