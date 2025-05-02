@@ -379,14 +379,13 @@ class FeatureTypeController extends BaseAdminController
                         ->filterById($feature->getId())
                         ->findOne();
 
-                    if ($existing === null || $existing->getTitle() === null || $existing->getTitle() === '') {
-                        $featureAvI18n = $existing ?? new FeatureAvI18n();
-                        $featureAvI18n
-                            ->setId($feature->getId())
-                            ->setTitle($title)
-                            ->setLocale($locale)
-                            ->save();
-                    }
+                    $featureAvI18n = $existing ?? new FeatureAvI18n();
+                    $featureAvI18n
+                        ->setId($feature->getId())
+                        ->setTitle($title)
+                        ->setLocale($locale)
+                        ->save();
+
                 }
             }
 
