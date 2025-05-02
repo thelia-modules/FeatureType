@@ -103,11 +103,9 @@
                         <div class="alert alert-info">
                             {intl l="This feature duplicates feature values in other languages" d="featuretype.bo.default"}
                         </div>
-                        <form action="{url path="/admin/module/feature-type/duplicate/feature/{$smarty.get.feature_id}"}" method="post" enctype="multipart/form-data">
-                            <button type="submit" class="btn btn-success">
-                                {intl l="Duplicate characteristic values" d="featuretype.bo.default"}
-                            </button>
-                        </form>
+                        <a type="submit" class="btn btn-success" href="#duplicate_confim_modal" data-toggle="modal">
+                            {intl l="Duplicate characteristic values" d="featuretype.bo.default"}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -160,3 +158,16 @@
     {/form}
 </div>
 {/loop}
+
+
+
+{include
+file = "includes/generic-confirm-dialog.html"
+
+dialog_id       = "duplicate_confim_modal"
+dialog_title    = {intl l="Duplicates feature values in other languages" d="featuretype.bo.default"}
+dialog_message  = {intl l="Warning! This will override all previous translations." d="featuretype.bo.default"}
+
+form_action         = {url path="/admin/module/feature-type/duplicate/feature/{$smarty.get.feature_id}"}
+form_content        = ""
+}
