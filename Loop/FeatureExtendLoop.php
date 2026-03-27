@@ -15,10 +15,12 @@ use FeatureType\Model\Map\FeatureFeatureTypeTableMap;
 use FeatureType\Model\Map\FeatureTypeTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\Join;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
 use Thelia\Core\Template\Element\PropelSearchLoopInterface;
 use Thelia\Core\Template\Loop\Argument\Argument;
+use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 use Thelia\Core\Template\Loop\Feature;
 use Thelia\Model\FeatureAv as FeatureModel;
 use Thelia\Model\Map\FeatureTableMap;
@@ -31,9 +33,9 @@ use Thelia\Model\Map\FeatureTableMap;
 class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
 {
     /**
-     * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
+     * @return ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return parent::getArgDefinitions()->addArguments(array(
             Argument::createIntListTypeArgument("feature_type_id"),
@@ -44,9 +46,9 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
     /**
      * this method returns a Propel ModelCriteria
      *
-     * @return \Propel\Runtime\ActiveQuery\ModelCriteria
+     * @return ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $query = parent::buildModelCriteria();
 
@@ -121,7 +123,7 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
      * @param LoopResult $loopResult
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
      */
-    protected function getFeaturesType(LoopResult $loopResult)
+    protected function getFeaturesType(LoopResult $loopResult): mixed
     {
         $featureIds = array();
 
@@ -156,7 +158,7 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
      * @param string $slug
      * @return string
      */
-    protected function formatSlug($slug)
+    protected function formatSlug($slug): string
     {
         return strtoupper(str_replace('-', '_', $slug));
     }
@@ -166,7 +168,7 @@ class FeatureExtendLoop extends Feature implements PropelSearchLoopInterface
      * @return LoopResult
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         $featureTypes = self::getFeaturesType($loopResult);
 

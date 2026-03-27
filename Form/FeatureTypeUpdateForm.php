@@ -22,7 +22,7 @@ class FeatureTypeUpdateForm extends FeatureTypeCreateForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public static function getName()
+    public static function getName(): string
     {
         return 'feature_type-update';
     }
@@ -33,7 +33,7 @@ class FeatureTypeUpdateForm extends FeatureTypeCreateForm
      * Form this you have to call add method on $this->formBuilder feature :
      *
      */
-    protected function buildForm()
+    protected function buildForm(): void
     {
         parent::buildForm();
 
@@ -50,7 +50,7 @@ class FeatureTypeUpdateForm extends FeatureTypeCreateForm
      * @param $value
      * @param ExecutionContextInterface $context
      */
-    public function checkExistType($value, ExecutionContextInterface $context)
+    public function checkExistType($value, ExecutionContextInterface $context): void
     {
     }
 }

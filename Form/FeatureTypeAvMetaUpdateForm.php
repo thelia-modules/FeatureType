@@ -29,7 +29,7 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public static function getName()
+    public static function getName(): string
     {
         return 'feature_type_av_meta-update';
     }
@@ -40,7 +40,7 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
      * Form this you have to call add method on $this->formBuilder feature :
      *
      */
-    protected function buildForm()
+    protected function buildForm(): void
     {
         parent::buildForm();
 
@@ -76,7 +76,7 @@ class FeatureTypeAvMetaUpdateForm extends FeatureTypeForm
      * @param $value
      * @param ExecutionContextInterface $context
      */
-    public function checkImageSize($value, ExecutionContextInterface $context)
+    public function checkImageSize($value, ExecutionContextInterface $context): void
     {
         foreach ($value as $featureAvId => $featureAv) {
             foreach ($featureAv['lang'] as $langId => $lang) {

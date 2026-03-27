@@ -27,8 +27,8 @@ use Thelia\Model\FeatureAvI18n;
 use Thelia\Model\FeatureAvI18nQuery;
 use Thelia\Model\FeatureAvQuery;
 use Thelia\Model\LangQuery;
-use Thelia\Core\HttpFoundation\Response;
 use Thelia\Tools\URL;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class FeatureTypeController
@@ -43,7 +43,7 @@ class FeatureTypeController extends BaseAdminController
      * @param array $params
      * @return Response
      */
-    public function viewAllAction($params = array())
+    public function viewAllAction($params = array()): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::VIEW)) {
             return $response;
@@ -57,7 +57,7 @@ class FeatureTypeController extends BaseAdminController
      * @return Response
      * @throws \Exception
      */
-    public function viewAction($id)
+    public function viewAction($id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::VIEW)) {
             return $response;
@@ -119,7 +119,7 @@ class FeatureTypeController extends BaseAdminController
     /**
      * @return Response
      */
-    public function createAction(EventDispatcherInterface $eventDispatcher)
+    public function createAction(EventDispatcherInterface $eventDispatcher): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
@@ -151,7 +151,7 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    public function updateAction(EventDispatcherInterface $eventDispatcher, $id)
+    public function updateAction(EventDispatcherInterface $eventDispatcher, $id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::UPDATE)) {
             return $response;
@@ -188,7 +188,7 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    public function deleteAction(EventDispatcherInterface $eventDispatcher, $id)
+    public function deleteAction(EventDispatcherInterface $eventDispatcher, $id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::DELETE)) {
             return $response;
@@ -230,7 +230,7 @@ class FeatureTypeController extends BaseAdminController
      * @return Response
      * @throws \Exception
      */
-    public function copyAction($id)
+    public function copyAction($id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
@@ -287,7 +287,7 @@ class FeatureTypeController extends BaseAdminController
      * @return FeatureType
      * @throws \Exception
      */
-    protected function hydrateFeatureTypeByForm($form, $id = null)
+    protected function hydrateFeatureTypeByForm($form, $id = null): FeatureType
     {
         $data = $form->getData();
 
@@ -331,7 +331,7 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    protected function viewFeature($id)
+    protected function viewFeature($id): Response
     {
         return $this->render("feature-edit", array(
             'feature_id' => $id
@@ -342,7 +342,7 @@ class FeatureTypeController extends BaseAdminController
      * @throws PropelException
      */
     #[Route('/admin/module/feature-type/duplicate/feature/{id}', name: 'featuretype_duplicate', methods: ['POST'])]
-    public function duplicateFeature(int $id, Request $request)
+    public function duplicateFeature(int $id, Request $request): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'AttributeType', AccessManager::CREATE)) {
             return $response;

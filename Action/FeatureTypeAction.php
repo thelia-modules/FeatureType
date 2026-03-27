@@ -27,7 +27,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function create(FeatureTypeEvent $event)
+    public function create(FeatureTypeEvent $event): void
     {
         $event->getFeatureType()->save($event->getConnectionInterface());
     }
@@ -37,7 +37,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function update(FeatureTypeEvent $event)
+    public function update(FeatureTypeEvent $event): void
     {
         $event->getFeatureType()->save($event->getConnectionInterface());
     }
@@ -47,7 +47,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function delete(FeatureTypeEvent $event)
+    public function delete(FeatureTypeEvent $event): void
     {
         $event->getFeatureType()->delete($event->getConnectionInterface());
     }
@@ -57,7 +57,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function associate(FeatureTypeEvent $event)
+    public function associate(FeatureTypeEvent $event): void
     {
         (new FeatureFeatureType())
             ->setFeatureId($event->getFeature()->getId())
@@ -70,7 +70,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function dissociate(FeatureTypeEvent $event)
+    public function dissociate(FeatureTypeEvent $event): void
     {
         FeatureFeatureTypeQuery::create()
             ->filterByFeature($event->getFeature())
@@ -83,7 +83,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function metaCreate(FeatureTypeAvMetaEvent $event)
+    public function metaCreate(FeatureTypeAvMetaEvent $event): void
     {
         $event->getFeatureTypeAvMeta()->save($event->getConnectionInterface());
     }
@@ -93,7 +93,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function metaUpdate(FeatureTypeAvMetaEvent $event)
+    public function metaUpdate(FeatureTypeAvMetaEvent $event): void
     {
         $event->getFeatureTypeAvMeta()->save($event->getConnectionInterface());
     }
@@ -103,7 +103,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      * @throws \Exception
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function metaDelete(FeatureTypeAvMetaEvent $event)
+    public function metaDelete(FeatureTypeAvMetaEvent $event): void
     {
         $event->getFeatureTypeAvMeta()->delete($event->getConnectionInterface());
     }
@@ -128,7 +128,7 @@ class FeatureTypeAction implements EventSubscriberInterface
      *
      * @api
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
             FeatureTypeEvents::FEATURE_TYPE_CREATE => array(

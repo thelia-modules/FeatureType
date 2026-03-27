@@ -33,7 +33,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
     /**
      * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): \Thelia\Core\Template\Loop\Argument\ArgumentCollection
     {
         return parent::getArgDefinitions()->addArguments(array(
             Argument::createIntListTypeArgument("feature_type_id"),
@@ -46,7 +46,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
      *
      * @return \Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): \Propel\Runtime\ActiveQuery\ModelCriteria
     {
         $query = parent::buildModelCriteria();
 
@@ -121,7 +121,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
      * @param LoopResult $loopResult
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
      */
-    protected function getFeaturesMeta(LoopResult $loopResult)
+    protected function getFeaturesMeta(LoopResult $loopResult): mixed
     {
         $featureAvIds = array();
 
@@ -171,7 +171,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
      * @param string $slug
      * @return string
      */
-    protected function formatSlug($slug)
+    protected function formatSlug($slug): string
     {
         return strtoupper(str_replace('-', '_', $slug));
     }
@@ -181,7 +181,7 @@ class FeatureAvailabilityExtendLoop extends FeatureAvailability implements Prope
      * @return LoopResult
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         $featuresMeta = self::getFeaturesMeta($loopResult);
 

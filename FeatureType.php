@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurat
 use Symfony\Component\Finder\Finder;
 use Thelia\Core\Template\TemplateDefinition;
 use Thelia\Module\BaseModule;
-use Thelia\Install\Database;
+use Thelia\Core\Install\Database;
 
 /**
  * Class FeatureType
@@ -73,7 +73,7 @@ class FeatureType extends BaseModule
     /**
      * @return array
      */
-    public function getHooks()
+    public function getHooks(): array
     {
         return array(
             array(

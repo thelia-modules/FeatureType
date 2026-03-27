@@ -33,7 +33,7 @@ class FeatureValueExtendLoop extends FeatureValue implements PropelSearchLoopInt
      * @param LoopResult $loopResult
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
      */
-    protected function getFeaturesMeta(LoopResult $loopResult)
+    protected function getFeaturesMeta(LoopResult $loopResult): mixed
     {
         $featureAvIds = array();
 
@@ -83,7 +83,7 @@ class FeatureValueExtendLoop extends FeatureValue implements PropelSearchLoopInt
      * @param string $slug
      * @return string
      */
-    protected function formatSlug($slug)
+    protected function formatSlug($slug): string
     {
         return strtoupper(str_replace('-', '_', $slug));
     }
@@ -93,7 +93,7 @@ class FeatureValueExtendLoop extends FeatureValue implements PropelSearchLoopInt
      * @return LoopResult
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         $featuresMeta = self::getFeaturesMeta($loopResult);
 

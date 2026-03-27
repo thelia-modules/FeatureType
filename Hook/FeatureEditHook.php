@@ -24,7 +24,6 @@ use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Form\TheliaFormFactory;
 use Thelia\Core\Hook\BaseHook;
 use Thelia\Core\Template\ParserContext;
-use Thelia\Core\Thelia;
 use Thelia\Model\FeatureAv;
 use Thelia\Model\FeatureAvQuery;
 use Thelia\Model\Lang;
@@ -37,9 +36,6 @@ use Thelia\Model\LangQuery;
  */
 class FeatureEditHook extends BaseHook
 {
-    /** @var ContainerInterface */
-    protected $container = null;
-
     /** @var TheliaFormFactory */
     protected $formFactory = null;
 
@@ -55,7 +51,7 @@ class FeatureEditHook extends BaseHook
     /**
      * @param HookRenderEvent $event
      */
-    public function onFeatureEditBottom(HookRenderEvent $event)
+    public function onFeatureEditBottom(HookRenderEvent $event): void
     {
         $data = self::hydrateForm($event->getArgument('feature_id'));
 
@@ -81,7 +77,7 @@ class FeatureEditHook extends BaseHook
     /**
      * @param HookRenderEvent $event
      */
-    public function onFeatureEditJs(HookRenderEvent $event)
+    public function onFeatureEditJs(HookRenderEvent $event): void
     {
         $event->add($this->render(
             'feature-type/hook/feature-edit-js.html',
@@ -95,7 +91,7 @@ class FeatureEditHook extends BaseHook
      * @param FeatureAv $featureAv
      * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
      */
-    protected function getFeatureTypeAvMetas(FeatureAv $featureAv)
+    protected function getFeatureTypeAvMetas(FeatureAv $featureAv): mixed
     {
         $join = new Join();
 
@@ -121,7 +117,7 @@ class FeatureEditHook extends BaseHook
      * @param int $featureId
      * @return array
      */
-    protected function hydrateForm($featureId)
+    protected function hydrateForm($featureId): array
     {
         $data = array('feature_av' => array());
 
