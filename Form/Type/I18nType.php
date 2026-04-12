@@ -37,7 +37,7 @@ class I18nType extends AbstractType
         );
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'lang';
     }
