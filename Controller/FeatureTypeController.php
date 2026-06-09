@@ -68,12 +68,13 @@ class FeatureTypeController extends BaseAdminController
         $locale = $this->getRequest()->getLocale();
 
         $featureTypes = FeatureTypeQuery::create()
-            ->setLocale($locale)
             ->orderById()
             ->find();
 
         $list = [];
         foreach ($featureTypes as $featureType) {
+            $featureType->setLocale($locale);
+
             $features = [];
             $featureFeatureTypes = \FeatureType\Model\FeatureFeatureTypeQuery::create()
                 ->filterByFeatureTypeId($featureType->getId())
@@ -81,10 +82,10 @@ class FeatureTypeController extends BaseAdminController
 
             foreach ($featureFeatureTypes as $featureFeatureType) {
                 $feature = \Thelia\Model\FeatureQuery::create()
-                    ->setLocale($locale)
                     ->findPk($featureFeatureType->getFeatureId());
 
                 if (null !== $feature) {
+                    $feature->setLocale($locale);
                     $features[] = [
                         'id' => $feature->getId(),
                         'title' => $feature->getTitle(),

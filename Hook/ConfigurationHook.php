@@ -76,12 +76,13 @@ class ConfigurationHook extends BaseHook
         $locale = $this->getRequest()?->getLocale() ?? 'en_US';
 
         $featureTypes = FeatureTypeQuery::create()
-            ->setLocale($locale)
             ->orderById()
             ->find();
 
         $list = [];
         foreach ($featureTypes as $featureType) {
+            $featureType->setLocale($locale);
+
             $features = [];
             $featureFeatureTypes = FeatureFeatureTypeQuery::create()
                 ->filterByFeatureTypeId($featureType->getId())
@@ -89,10 +90,10 @@ class ConfigurationHook extends BaseHook
 
             foreach ($featureFeatureTypes as $featureFeatureType) {
                 $feature = FeatureQuery::create()
-                    ->setLocale($locale)
                     ->findPk($featureFeatureType->getFeatureId());
 
                 if (null !== $feature) {
+                    $feature->setLocale($locale);
                     $features[] = [
                         'id' => $feature->getId(),
                         'title' => $feature->getTitle(),
