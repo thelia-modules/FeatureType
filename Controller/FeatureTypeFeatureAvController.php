@@ -42,7 +42,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
 
     /**
      * @param int $feature_id
-     * @return null|\Symfony\Component\HttpFoundation\Response|\Thelia\Core\HttpFoundation\Response
+     * @return null|\Symfony\Component\HttpFoundation\Response
      */
     public function updateMetaAction(EventDispatcherInterface $eventDispatcher, $feature_id)
     {

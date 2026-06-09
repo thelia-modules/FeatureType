@@ -10,7 +10,7 @@ namespace FeatureType\Controller;
 
 use FeatureType\Model\FeatureTypeQuery;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Thelia\Core\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response;
 use FeatureType\Event\FeatureTypeEvents;
 use FeatureType\Event\FeatureTypeEvent;
 use Thelia\Core\Security\AccessManager;
