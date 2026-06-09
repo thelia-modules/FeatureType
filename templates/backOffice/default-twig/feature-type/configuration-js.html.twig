@@ -1,0 +1,194 @@
+<script>
+    "use strict";
+    (function () {
+        var module = document.getElementById('module-feature-type');
+        if (!module) {
+            return;
+        }
+
+        function getModal(selector) {
+            var el = module.querySelector(selector);
+            return el && window.bootstrap ? window.bootstrap.Modal.getOrCreateInstance(el) : null;
+        }
+
+        function closestCol(el) {
+            return el ? el.closest('.col-md-6') : null;
+        }
+
+        function toggle(el, hidden) {
+            if (el) {
+                el.classList.toggle('d-none', hidden);
+            }
+        }
+
+        // dynamic field show/hide based on has_feature_av_value + input_type
+        function applyFieldVisibility(scopeSelector, p) {
+            var scope = module.querySelector(scopeSelector);
+            if (!scope) {
+                return;
+            }
+
+            var hasValue = scope.querySelector('#' + p + 'has_feature_av_value');
+            var inputType = scope.querySelector('#' + p + 'input_type');
+            var optionalIds = [
+                'is_multilingual_feature_av_value', 'input_type', 'pattern', 'css_class',
+                'min', 'max', 'step', 'image_max_width', 'image_max_height', 'image_ratio'
+            ];
+
+            if (!hasValue || !hasValue.checked) {
+                optionalIds.forEach(function (id) {
+                    toggle(closestCol(scope.querySelector('#' + p + id)), true);
+                });
+                return;
+            }
+
+            optionalIds.forEach(function (id) {
+                toggle(closestCol(scope.querySelector('#' + p + id)), false);
+            });
+
+            if (!inputType) {
+                return;
+            }
+
+            var val = inputType.value;
+            var patternCol = closestCol(scope.querySelector('#' + p + 'pattern'));
+            var numericCols = ['min', 'max', 'step'].map(function (id) {
+                return closestCol(scope.querySelector('#' + p + id));
+            });
+            var imageCols = ['image_max_width', 'image_max_height', 'image_ratio'].map(function (id) {
+                return closestCol(scope.querySelector('#' + p + id));
+            });
+
+            function setCols(cols, hidden) {
+                cols.forEach(function (c) { toggle(c, hidden); });
+            }
+
+            if (val === 'text' || val === 'color' || val === 'url') {
+                setCols(numericCols, true);
+                setCols(imageCols, true);
+                toggle(patternCol, false);
+            } else if (val === 'textarea' || val === 'boolean') {
+                toggle(patternCol, true);
+                setCols(numericCols, true);
+                setCols(imageCols, true);
+            } else if (val === 'range' || val === 'number') {
+                setCols(imageCols, true);
+                setCols(numericCols, false);
+                toggle(patternCol, false);
+            } else if (val === 'image') {
+                setCols(numericCols, true);
+                setCols(imageCols, false);
+                toggle(patternCol, false);
+            }
+        }
+
+        // tabs (create/edit forms)
+        module.addEventListener('click', function (event) {
+            var tabLink = event.target.closest('.js-form-create .nav-link, .js-form-edit .nav-link');
+            if (tabLink) {
+                event.preventDefault();
+                var target = tabLink.getAttribute('href');
+                var pane = target ? module.querySelector(target) : null;
+                if (pane) {
+                    pane.parentNode.querySelectorAll('.tab-pane').forEach(function (p) {
+                        p.classList.remove('active', 'show');
+                    });
+                    pane.classList.add('active', 'show');
+                    var navTabs = tabLink.closest('.nav-tabs');
+                    if (navTabs) {
+                        navTabs.querySelectorAll('.nav-link').forEach(function (a) { a.classList.remove('active'); });
+                    }
+                    tabLink.classList.add('active');
+                }
+            }
+        });
+
+        // change listeners (delegated)
+        module.addEventListener('change', function (event) {
+            if (event.target.matches('#atcf-has_feature_av_value, #atcf-input_type')) {
+                applyFieldVisibility('.js-modal-create', 'atcf-');
+            }
+            if (event.target.matches('#atuf-has_feature_av_value, #atuf-input_type')) {
+                applyFieldVisibility('.js-modal-edit', 'atuf-');
+            }
+        });
+
+        // create
+        module.addEventListener('click', function (event) {
+            if (event.target.closest('.js-action-create')) {
+                var m = getModal('.js-modal-create');
+                if (m) { m.show(); }
+                applyFieldVisibility('.js-modal-create', 'atcf-');
+            }
+        });
+
+        // delete
+        module.addEventListener('click', function (event) {
+            var del = event.target.closest('.js-action-delete');
+            if (del) {
+                var form = module.querySelector('.js-form-delete');
+                if (form) {
+                    form.setAttribute('action', del.dataset.action);
+                }
+                var m = getModal('.js-modal-delete');
+                if (m) { m.show(); }
+            }
+        });
+
+        // edit (ajax)
+        module.addEventListener('click', function (event) {
+            var edit = event.target.closest('.js-action-edit');
+            if (!edit) {
+                return;
+            }
+            fetch(edit.dataset.action, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+                .then(function (r) { return r.text(); })
+                .then(function (html) {
+                    var wrapper = module.querySelector('.js-form-edit-wrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = html;
+                    }
+                    var m = getModal('.js-modal-edit');
+                    if (m) { m.show(); }
+                    applyFieldVisibility('.js-modal-edit', 'atuf-');
+                })
+                .catch(function (e) { window.alert(e.message); });
+        });
+
+        // copy (ajax)
+        module.addEventListener('click', function (event) {
+            var copy = event.target.closest('.js-action-copy');
+            if (!copy) {
+                return;
+            }
+            fetch(copy.dataset.action, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+                .then(function (r) { return r.text(); })
+                .then(function (html) {
+                    var wrapper = module.querySelector('.js-form-create-wrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = html;
+                    }
+                    var m = getModal('.js-modal-create');
+                    if (m) { m.show(); }
+                    applyFieldVisibility('.js-modal-create', 'atcf-');
+                })
+                .catch(function (e) { window.alert(e.message); });
+        });
+
+        // submit feedback
+        module.addEventListener('submit', function (event) {
+            var form = event.target.closest('form');
+            if (!form) {
+                return;
+            }
+            var submitButton = form.querySelector('button[type=submit]');
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="bi bi-arrow-repeat"></i> {{ 'Please wait ...'|trans({}, 'featuretype.bo.default') }}';
+            }
+            module.querySelectorAll('button').forEach(function (b) { b.setAttribute('disabled', 'disabled'); });
+        });
+
+        // initial visibility for create form
+        applyFieldVisibility('.js-modal-create', 'atcf-');
+    }());
+</script>

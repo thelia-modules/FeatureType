@@ -37,7 +37,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
             return $response;
         }
 
-        $form = $this->createForm('feature_type.associate');
+        $form = $this->createForm(\FeatureType\Form\FeatureTypeForm::getName());
 
         try {
             $this->validateForm($form, 'POST');
@@ -70,7 +70,7 @@ class FeatureTypeFeatureController extends FeatureTypeController
             return $response;
         }
 
-        $form = $this->createForm('feature_type.dissociate');
+        $form = $this->createForm(\FeatureType\Form\FeatureTypeForm::getName());
 
         try {
             $this->validateForm($form, 'POST');

@@ -8,6 +8,9 @@
 
 namespace FeatureType\Controller;
 
+use FeatureType\Form\FeatureTypeCreateForm;
+use FeatureType\Form\FeatureTypeForm;
+use FeatureType\Form\FeatureTypeUpdateForm;
 use FeatureType\Model\FeatureTypeI18n;
 use FeatureType\Model\FeatureTypeQuery;
 use FeatureType\Event\FeatureTypeEvent;
@@ -15,7 +18,6 @@ use FeatureType\Event\FeatureTypeEvents;
 use FeatureType\Model\FeatureType;
 use FeatureType\FeatureType as FeatureTypeCore;
 use Propel\Runtime\Exception\PropelException;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -29,6 +31,7 @@ use Thelia\Model\FeatureAvQuery;
 use Thelia\Model\LangQuery;
 use Thelia\Tools\URL;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
 /**
  * Class FeatureTypeController
@@ -39,17 +42,116 @@ class FeatureTypeController extends BaseAdminController
 {
     protected $objectName = 'Feature type';
 
+    protected ?Environment $twig = null;
+
+    public function setTwig(Environment $twig): void
+    {
+        $this->twig = $twig;
+    }
+
+    protected function renderTwig(string $template, array $context = []): Response
+    {
+        return new Response(
+            $this->twig->render(
+                '@FeatureTypeModule/backOffice/default-twig/' . $template . '.html.twig',
+                $context
+            )
+        );
+    }
+
+    /**
+     * Build the feature-type list (with the features each one is associated to)
+     * displayed on the module configuration page.
+     */
+    protected function buildFeatureTypeList(): array
+    {
+        $locale = $this->getRequest()->getLocale();
+
+        $featureTypes = FeatureTypeQuery::create()
+            ->setLocale($locale)
+            ->orderById()
+            ->find();
+
+        $list = [];
+        foreach ($featureTypes as $featureType) {
+            $features = [];
+            $featureFeatureTypes = \FeatureType\Model\FeatureFeatureTypeQuery::create()
+                ->filterByFeatureTypeId($featureType->getId())
+                ->find();
+
+            foreach ($featureFeatureTypes as $featureFeatureType) {
+                $feature = \Thelia\Model\FeatureQuery::create()
+                    ->setLocale($locale)
+                    ->findPk($featureFeatureType->getFeatureId());
+
+                if (null !== $feature) {
+                    $features[] = [
+                        'id' => $feature->getId(),
+                        'title' => $feature->getTitle(),
+                    ];
+                }
+            }
+
+            $list[] = [
+                'id' => $featureType->getId(),
+                'slug' => $featureType->getSlug(),
+                'title' => $featureType->getTitle(),
+                'description' => $featureType->getDescription(),
+                'features' => $features,
+            ];
+        }
+
+        return $list;
+    }
+
     /**
      * @param array $params
      * @return Response
      */
-    public function viewAllAction($params = array()): Response
+    public function viewAllAction(Environment $twig, $params = array()): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::VIEW)) {
             return $response;
         }
 
-        return $this->render("feature-type/configuration", $params);
+        $this->setTwig($twig);
+
+        $createForm = $this->createForm(FeatureTypeCreateForm::getName(), data: ['has_feature_av_value' => 0]);
+
+        return $this->renderTwig('feature-type/configuration', array_merge([
+            'feature_types' => $this->buildFeatureTypeList(),
+            'edit_language_id' => $this->resolveEditLanguageId(),
+            'feature_type_id' => null,
+            'create_form' => $createForm->createView()->getView(),
+            'langs' => $this->buildLangList(),
+        ], $params));
+    }
+
+    protected function buildLangList(): array
+    {
+        $langs = [];
+        foreach (LangQuery::create()->filterByActive(1)->find() as $lang) {
+            $langs[] = [
+                'id' => $lang->getId(),
+                'locale' => $lang->getLocale(),
+                'code' => $lang->getCode(),
+                'title' => $lang->getTitle(),
+            ];
+        }
+
+        return $langs;
+    }
+
+    protected function resolveEditLanguageId(): ?int
+    {
+        $request = $this->getRequest();
+        if (!$request->hasSession()) {
+            return null;
+        }
+
+        $lang = $request->getSession()->get('thelia.admin.edition.lang');
+
+        return $lang instanceof \Thelia\Model\Lang ? $lang->getId() : null;
     }
 
     /**
@@ -57,11 +159,13 @@ class FeatureTypeController extends BaseAdminController
      * @return Response
      * @throws \Exception
      */
-    public function viewAction($id): Response
+    public function viewAction(Environment $twig, $id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::VIEW)) {
             return $response;
         }
+
+        $this->setTwig($twig);
 
         if (null === $featureType = FeatureTypeQuery::create()->findPk($id)) {
             throw new \Exception(Translator::getInstance()->trans(
@@ -85,7 +189,7 @@ class FeatureTypeController extends BaseAdminController
         }
 
 
-        $form = $this->createForm('feature_type.update', FormType::class, array(
+        $form = $this->createForm(FeatureTypeUpdateForm::getName(), data: array(
             'id' => $featureType->getId(),
             'slug' => $featureType->getSlug(),
             'pattern' => $featureType->getPattern(),
@@ -103,29 +207,33 @@ class FeatureTypeController extends BaseAdminController
             'description' => $description
         ));
 
-
-
         $this->getParserContext()->addForm($form);
 
         if ($this->getRequest()->isXmlHttpRequest()) {
-            return $this->render("feature-type/include/form-update");
-        } else {
-            return $this->viewAllAction(array(
-                'feature_type_id' => $id
-            ));
+            return $this->renderTwig('feature-type/include/form-update', [
+                'form' => $form->createView()->getView(),
+                'feature_type_id' => $featureType->getId(),
+                'edit_language_id' => $this->resolveEditLanguageId(),
+                'langs' => $this->buildLangList(),
+            ]);
         }
+
+        return $this->viewAllAction($twig, array(
+            'feature_type_id' => $id,
+            'update_form' => $form->createView()->getView(),
+        ));
     }
 
     /**
      * @return Response
      */
-    public function createAction(EventDispatcherInterface $eventDispatcher): Response
+    public function createAction(EventDispatcherInterface $eventDispatcher, Environment $twig): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
         }
 
-        $form = $this->createForm('feature_type.create');
+        $form = $this->createForm(FeatureTypeCreateForm::getName());
 
         try {
             $eventDispatcher->dispatch(
@@ -143,7 +251,7 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return $this->viewAllAction();
+            return $this->viewAllAction($twig);
         }
     }
 
@@ -151,13 +259,13 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    public function updateAction(EventDispatcherInterface $eventDispatcher, $id): Response
+    public function updateAction(EventDispatcherInterface $eventDispatcher, Environment $twig, $id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::UPDATE)) {
             return $response;
         }
 
-        $form = $this->createForm('feature_type.update');
+        $form = $this->createForm(FeatureTypeUpdateForm::getName());
 
         try {
             $eventDispatcher->dispatch(
@@ -178,8 +286,9 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return $this->viewAllAction(array(
-                'feature_type_id' => $id
+            return $this->viewAllAction($twig, array(
+                'feature_type_id' => $id,
+                'update_form' => $form->createView()->getView(),
             ));
         }
     }
@@ -188,13 +297,13 @@ class FeatureTypeController extends BaseAdminController
      * @param int $id
      * @return Response
      */
-    public function deleteAction(EventDispatcherInterface $eventDispatcher, $id): Response
+    public function deleteAction(EventDispatcherInterface $eventDispatcher, Environment $twig, $id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::DELETE)) {
             return $response;
         }
 
-        $form = $this->createForm('feature_type.delete');
+        $form = $this->createForm(FeatureTypeForm::getName());
 
         try {
             $this->validateForm($form, 'POST');
@@ -221,7 +330,7 @@ class FeatureTypeController extends BaseAdminController
                 $form
             );
 
-            return $this->viewAllAction();
+            return $this->viewAllAction($twig);
         }
     }
 
@@ -230,11 +339,13 @@ class FeatureTypeController extends BaseAdminController
      * @return Response
      * @throws \Exception
      */
-    public function copyAction($id): Response
+    public function copyAction(Environment $twig, $id): Response
     {
         if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
         }
+
+        $this->setTwig($twig);
 
         if (null === $featureType = FeatureTypeQuery::create()->findPk($id)) {
             throw new \Exception(Translator::getInstance()->trans(
@@ -255,7 +366,7 @@ class FeatureTypeController extends BaseAdminController
             }
         }
 
-        $form = $this->createForm('feature_type.create', 'form', array(
+        $form = $this->createForm(FeatureTypeCreateForm::getName(), data: array(
             'slug' => $featureType->getSlug() . '_' . Translator::getInstance()->trans(
                     'copy',
                     array(),
@@ -278,7 +389,12 @@ class FeatureTypeController extends BaseAdminController
 
         $this->getParserContext()->addForm($form);
 
-        return $this->render("feature-type/include/form-create");
+        return $this->renderTwig('feature-type/include/form-create', [
+            'form' => $form->createView()->getView(),
+            'feature_type_id' => null,
+            'edit_language_id' => $this->resolveEditLanguageId(),
+            'langs' => $this->buildLangList(),
+        ]);
     }
 
     /**

@@ -1,0 +1,6 @@
+{% if is_granted('VIEW', {resource: 'admin.module', module: 'FeatureType'}) %}
+    <tr>
+        <td><a href="{{ path('feature_type_view_all') }}">{{ 'Features types'|trans({}, 'featuretype.bo.default') }}</a></td>
+        <td><a class="btn btn-secondary btn-sm" href="{{ path('feature_type_view_all') }}"><i class="bi bi-pencil"></i></a></td>
+    </tr>
+{% endif %}

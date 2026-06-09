@@ -13,18 +13,18 @@ use FeatureType\Model\FeatureFeatureType;
 use FeatureType\Model\FeatureFeatureTypeQuery;
 use FeatureType\Model\FeatureTypeAvMeta;
 use FeatureType\Model\FeatureTypeAvMetaQuery;
+use FeatureType\Model\FeatureTypeQuery;
 use FeatureType\Model\Map\FeatureFeatureTypeTableMap;
 use FeatureType\Model\Map\FeatureTypeAvMetaTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\Join;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Form\TheliaFormFactory;
 use Thelia\Core\Hook\BaseHook;
-use Thelia\Core\Template\ParserContext;
+use Thelia\Core\Template\Parser\ParserResolver;
 use Thelia\Model\FeatureAv;
+use Thelia\Model\FeatureAvI18nQuery;
 use Thelia\Model\FeatureAvQuery;
 use Thelia\Model\Lang;
 use Thelia\Model\LangQuery;
@@ -36,61 +36,135 @@ use Thelia\Model\LangQuery;
  */
 class FeatureEditHook extends BaseHook
 {
-    /** @var TheliaFormFactory */
-    protected $formFactory = null;
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container, TheliaFormFactory $formFactory)
-    {
-        $this->container = $container;
-        $this->formFactory = $formFactory;
+    public function __construct(
+        private readonly TheliaFormFactory $formFactory,
+        ?EventDispatcherInterface $dispatcher = null,
+        ?ParserResolver $parserResolver = null,
+    ) {
+        parent::__construct($dispatcher, $parserResolver);
     }
 
-    /**
-     * @param HookRenderEvent $event
-     */
+    public static function getSubscribedHooks(): array
+    {
+        return [
+            'feature-edit.bottom' => [
+                ['type' => 'back', 'method' => 'onFeatureEditBottom'],
+            ],
+            'feature.edit-js' => [
+                ['type' => 'back', 'method' => 'onFeatureEditJs'],
+            ],
+        ];
+    }
+
     public function onFeatureEditBottom(HookRenderEvent $event): void
     {
-        $data = self::hydrateForm($event->getArgument('feature_id'));
+        $featureId = (int) $event->getArgument('feature_id');
 
-        /** @var ParserContext $parserContext */
-        $parserContext = $this->container->get('thelia.parser.context');
-        $form = $parserContext->getForm('feature_type_av_meta-update', FeatureTypeAvMetaUpdateForm::class, 'form');
+        $data = $this->hydrateForm($featureId);
 
-        if (!$form) {
-            $form = $this->formFactory->createForm('feature_type_av_meta-update', FormType::class, $data);
+        $form = $this->formFactory->createForm(FeatureTypeAvMetaUpdateForm::getName(), data: $data);
+
+        $featureTypes = FeatureTypeQuery::create()
+            ->setLocale($this->getRequest()->getLocale())
+            ->orderById()
+            ->find();
+
+        $langs = LangQuery::create()->find();
+
+        // associated feature types for this feature
+        $associatedFeatureTypeIds = [];
+        foreach (FeatureFeatureTypeQuery::create()->findByFeatureId($featureId) as $featureFeatureType) {
+            $associatedFeatureTypeIds[] = $featureFeatureType->getFeatureTypeId();
         }
 
-        $this->container->get('thelia.parser.context')->addForm($form);
+        $rows = [];
+        $availableForSelect = [];
+        foreach ($featureTypes as $featureType) {
+            $isAssociated = in_array($featureType->getId(), $associatedFeatureTypeIds, true);
+            $info = [
+                'id' => $featureType->getId(),
+                'slug' => $featureType->getSlug(),
+                'title' => $featureType->getTitle(),
+                'description' => $featureType->getDescription(),
+                'has_feature_av_value' => (bool) $featureType->getHasFeatureAvValue(),
+                'is_multilingual_feature_av_value' => (bool) $featureType->getIsMultilingualFeatureAvValue(),
+                'input_type' => $featureType->getInputType(),
+                'pattern' => $featureType->getPattern(),
+                'css_class' => $featureType->getCssClass(),
+                'min' => $featureType->getMin(),
+                'max' => $featureType->getMax(),
+                'step' => $featureType->getStep(),
+            ];
+
+            if ($isAssociated) {
+                $rows[] = $info;
+            } else {
+                $availableForSelect[] = $info;
+            }
+        }
+
+        // feature av titles per lang
+        $featureAvTitles = [];
+        foreach ($langs as $lang) {
+            $featureAvTitles[$lang->getId()] = [];
+            $i18ns = FeatureAvI18nQuery::create()
+                ->filterByLocale($lang->getLocale())
+                ->useFeatureAvQuery()
+                    ->filterByFeatureId($featureId)
+                ->endUse()
+                ->find();
+            foreach ($i18ns as $i18n) {
+                $featureAvTitles[$lang->getId()][$i18n->getId()] = $i18n->getTitle();
+            }
+        }
+
+        $langList = [];
+        foreach ($langs as $lang) {
+            $langList[] = [
+                'id' => $lang->getId(),
+                'locale' => $lang->getLocale(),
+                'code' => $lang->getCode(),
+                'title' => $lang->getTitle(),
+            ];
+        }
 
         $event->add($this->render(
-            'feature-type/hook/feature-edit-bottom.html',
-            array(
-                'feature_id' => $event->getArgument('feature_id'),
-                'form_meta_data' => $data
-            )
+            'FeatureType/hook/feature-edit-bottom.html.twig',
+            [
+                'form' => $form->createView()->getView(),
+                'feature_id' => $featureId,
+                'form_meta_data' => $data,
+                'associated_feature_types' => $rows,
+                'available_feature_types' => $availableForSelect,
+                'langs' => $langList,
+                'feature_av_titles' => $featureAvTitles,
+                'edit_language_id' => $this->resolveEditLanguageId(),
+            ]
         ));
     }
 
-    /**
-     * @param HookRenderEvent $event
-     */
     public function onFeatureEditJs(HookRenderEvent $event): void
     {
         $event->add($this->render(
-            'feature-type/hook/feature-edit-js.html',
-            array(
-                'feature_id' => $event->getArgument('feature_id')
-            )
+            'FeatureType/hook/feature-edit-js.html.twig',
+            [
+                'feature_id' => (int) $event->getArgument('feature_id'),
+            ]
         ));
     }
 
-    /**
-     * @param FeatureAv $featureAv
-     * @return array|mixed|\Propel\Runtime\Collection\ObjectCollection
-     */
+    private function resolveEditLanguageId(): ?int
+    {
+        $request = $this->getRequest();
+        if (!$request->hasSession()) {
+            return null;
+        }
+
+        $lang = $request->getSession()->get('thelia.admin.edition.lang');
+
+        return $lang instanceof Lang ? $lang->getId() : null;
+    }
+
     protected function getFeatureTypeAvMetas(FeatureAv $featureAv): mixed
     {
         $join = new Join();
@@ -113,13 +187,9 @@ class FeatureEditHook extends BaseHook
             ->find();
     }
 
-    /**
-     * @param int $featureId
-     * @return array
-     */
-    protected function hydrateForm($featureId): array
+    protected function hydrateForm(int $featureId): array
     {
-        $data = array('feature_av' => array());
+        $data = ['feature_av' => []];
 
         $featureAvs = FeatureAvQuery::create()->findByFeatureId($featureId);
 
@@ -131,22 +201,22 @@ class FeatureEditHook extends BaseHook
         foreach ($featureAvs as $featureAv) {
             $featureAvMetas = self::getFeatureTypeAvMetas($featureAv);
 
-            $data['feature_av'][$featureAv->getId()] = array(
-                'lang' => array()
-            );
+            $data['feature_av'][$featureAv->getId()] = [
+                'lang' => [],
+            ];
 
             /** @var Lang $lang */
             foreach ($langs as $lang) {
-                $data['feature_av'][$featureAv->getId()]['lang'][$lang->getId()] = array(
-                    'feature_type' => array()
-                );
+                $data['feature_av'][$featureAv->getId()]['lang'][$lang->getId()] = [
+                    'feature_type' => [],
+                ];
 
                 /** @var FeatureTypeAvMeta $featureAvMeta */
                 foreach ($featureAvMetas as $featureAvMeta) {
                     /** @var FeatureFeatureType $featureType */
                     foreach ($featureTypes as $featureType) {
                         if ($featureAvMeta->getLocale() === $lang->getLocale()
-                            && intval($featureAvMeta->getVirtualColumn("FEATURE_TYPE_ID")) === $featureType->getFeatureTypeId()
+                            && (int) $featureAvMeta->getVirtualColumn('FEATURE_TYPE_ID') === $featureType->getFeatureTypeId()
                         ) {
                             $data['feature_av'][$featureAv->getId()]['lang'][$lang->getId()]['feature_type'][$featureType->getFeatureTypeId()] = $featureAvMeta->getValue();
                         }

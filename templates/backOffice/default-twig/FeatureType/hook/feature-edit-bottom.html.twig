@@ -1,0 +1,133 @@
+{% if is_granted('VIEW', 'admin.configuration.feature') %}
+<div class="row" id="module-feature-type">
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2 class="card-title h5 mb-0">{{ 'Feature type'|trans({}, 'featuretype.bo.default') }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-body bg-light mb-3">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'ID'|trans }}</th>
+                                    <th>({{ 'Slug'|trans({}, 'featuretype.bo.default') }}) - {{ 'Title'|trans({}, 'featuretype.bo.default') }}</th>
+                                    <th>{{ 'Action'|trans({}, 'featuretype.bo.default') }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for featureType in associated_feature_types %}
+                                    <tr>
+                                        <td>{{ featureType.id }}</td>
+                                        <td>
+                                            <a href="{{ path('feature_type_view', {id: featureType.id}) }}">
+                                                ({{ featureType.slug }}) - {{ featureType.title }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm js-action-dissociate" data-action="{{ path('feature_type_dissociate', {feature_type_id: featureType.id, feature_id: feature_id}) }}">
+                                                <i class="bi bi-box-arrow-left"></i>
+                                                {{ 'Dissociate action'|trans({}, 'featuretype.bo.default') }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="10">
+                                            <div class="alert alert-info">
+                                                {{ 'No feature type for this feature'|trans({}, 'featuretype.bo.default') }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            {% if available_feature_types is not empty %}
+                                <form method="POST" class="js-form-associate" action="">
+                                    <input type="hidden" name="_token" value="{{ assignToken() }}" />
+                                    <input type="hidden" name="success_url" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
+
+                                    <div class="input-group">
+                                        <select class="form-select">
+                                            <option value="">{{ 'Select an feature type'|trans({}, 'featuretype.bo.default') }}</option>
+                                            {% for featureType in available_feature_types %}
+                                                <option value="{{ path('feature_type_associate', {feature_type_id: featureType.id, feature_id: feature_id}) }}">({{ featureType.slug }}) - {{ featureType.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-box-arrow-in-right"></i>
+                                            {{ 'Associate action'|trans({}, 'featuretype.bo.default') }}
+                                        </button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    {{ 'Currently, none of the features types are available'|trans({}, 'featuretype.bo.default') }}
+                                </div>
+                            {% endif %}
+                            <span class="form-text">
+                                <a href="{{ path('feature_type_view_all') }}">
+                                    {{ 'Create a new feature type'|trans({}, 'featuretype.bo.default') }}
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-body bg-light mb-3">
+                            <div class="alert alert-info">
+                                {{ 'This feature duplicates feature values in other languages'|trans({}, 'featuretype.bo.default') }}
+                            </div>
+                            <form method="POST" action="{{ path('featuretype_duplicate', {id: feature_id}) }}" onsubmit="return confirm('{{ 'Warning! This will override all previous translations.'|trans({}, 'featuretype.bo.default') }}');">
+                                <input type="hidden" name="_token" value="{{ assignToken() }}" />
+                                <button type="submit" class="btn btn-success">
+                                    {{ 'Duplicate characteristic values'|trans({}, 'featuretype.bo.default') }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-body bg-light mb-3">
+                            {% include '@FeatureTypeModule/backOffice/default-twig/feature-type/include/form-meta.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal dissociate -->
+    <form method="POST" class="js-form-dissociate" action="">
+        <input type="hidden" name="_token" value="{{ assignToken() }}" />
+        <input type="hidden" name="success_url" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
+
+        <div class="modal fade js-modal-dissociate" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <strong class="modal-title text-uppercase">{{ 'Dissociate feature type'|trans({}, 'featuretype.bo.default') }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ 'Dissociate the feature with the feature type ?'|trans({}, 'featuretype.bo.default') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg"></i>
+                            {{ 'Close action'|trans({}, 'featuretype.bo.default') }}
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-check-lg"></i>
+                            {{ 'Dissociate action'|trans({}, 'featuretype.bo.default') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}

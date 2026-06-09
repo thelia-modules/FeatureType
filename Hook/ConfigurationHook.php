@@ -18,13 +18,17 @@ use Thelia\Core\Hook\BaseHook;
  */
 class ConfigurationHook extends BaseHook
 {
-    /**
-     * @param HookRenderEvent $event
-     */
+    public static function getSubscribedHooks(): array
+    {
+        return [
+            'configuration.catalog-top' => [
+                ['type' => 'back', 'method' => 'onConfigurationCatalogTop'],
+            ],
+        ];
+    }
+
     public function onConfigurationCatalogTop(HookRenderEvent $event): void
     {
-        $event->add($this->render(
-            'feature-type/hook/configuration-catalog.html'
-        ));
+        $event->add($this->render('FeatureType/hook/configuration-catalog.html.twig'));
     }
 }

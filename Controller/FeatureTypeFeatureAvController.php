@@ -18,7 +18,6 @@ use FeatureType\Model\FeatureTypeAvMeta;
 use FeatureType\Model\FeatureTypeAvMetaQuery;
 use FeatureType\Model\FeatureTypeQuery;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Core\Security\AccessManager;
@@ -119,7 +118,7 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
             return $response;
         }
 
-        $form = $this->createForm("feature_type.delete");
+        $form = $this->createForm(\FeatureType\Form\FeatureTypeForm::getName());
 
         try {
              $this->validateForm($form);

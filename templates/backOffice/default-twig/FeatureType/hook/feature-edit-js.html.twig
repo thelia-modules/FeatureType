@@ -1,0 +1,162 @@
+<script>
+    "use strict";
+    (function () {
+        var module = document.getElementById('module-feature-type');
+        if (!module) {
+            return;
+        }
+
+        var canQuitPageSafely = true;
+
+        window.onbeforeunload = function () {
+            if (!canQuitPageSafely) {
+                return "Don't leave me!";
+            }
+        };
+
+        function showModal(selector) {
+            var el = module.querySelector(selector);
+            if (el && window.bootstrap) {
+                window.bootstrap.Modal.getOrCreateInstance(el).show();
+            }
+        }
+
+        // form submit feedback
+        module.addEventListener('submit', function (event) {
+            var form = event.target.closest('form');
+            if (!form) {
+                return;
+            }
+            canQuitPageSafely = true;
+            var submitButton = form.querySelector('button[type=submit]');
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="bi bi-arrow-repeat"></i> {{ 'Please wait ...'|trans({}, 'featuretype.bo.default') }}';
+            }
+            module.querySelectorAll('button, .btn-upload').forEach(function (b) {
+                b.setAttribute('disabled', 'disabled');
+            });
+        });
+
+        // meta-update tabs
+        module.addEventListener('click', function (event) {
+            var tabLink = event.target.closest('.js-form-meta-update .nav-tabs a, .js-form-meta-update .nav-link');
+            if (!tabLink) {
+                return;
+            }
+            event.preventDefault();
+            var target = tabLink.getAttribute('href');
+            if (!target) {
+                return;
+            }
+            var pane = module.querySelector(target);
+            if (!pane) {
+                return;
+            }
+            pane.parentNode.querySelectorAll('.tab-pane').forEach(function (p) {
+                p.classList.remove('active', 'show');
+            });
+            pane.classList.add('active', 'show');
+            var navTabs = tabLink.closest('.nav-tabs');
+            if (navTabs) {
+                navTabs.querySelectorAll('.nav-link, a').forEach(function (a) {
+                    a.classList.remove('active');
+                });
+            }
+            tabLink.classList.add('active');
+        });
+
+        // replicate value across non-multilingual inputs
+        module.addEventListener('change', function (event) {
+            var input = event.target.closest('.js-form-meta-update input, .js-form-meta-update textarea, .js-form-meta-update select');
+            if (input) {
+                if (input.dataset.replicate === 'true') {
+                    var val = input.value;
+                    var connector = input.dataset.connector;
+                    module.querySelectorAll(".js-form-meta-update [data-connector='" + connector + "']").forEach(function (el) {
+                        if (el === input) {
+                            return;
+                        }
+                        el.value = val;
+                    });
+                }
+                var info = document.getElementById('form-meta-update-info');
+                if (info) {
+                    info.classList.remove('d-none');
+                }
+                canQuitPageSafely = false;
+            }
+
+            // image preview on file change
+            var fileInput = event.target.closest('.js-form-meta-update input[type=file]');
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                var id = fileInput.getAttribute('id');
+                var del = document.getElementById(id + '_delete');
+                var upload = document.getElementById(id + '_upload');
+                var preview = document.getElementById(id + '_preview');
+                if (del) { del.classList.add('d-none'); }
+                if (upload) { upload.classList.add('d-none'); }
+                if (preview) { preview.classList.remove('d-none'); }
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var output = document.getElementById(id + '_preview');
+                    if (output) {
+                        output.src = reader.result;
+                    }
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+
+        // generic click delegation
+        module.addEventListener('click', function (event) {
+            var dissociate = event.target.closest('.js-action-dissociate');
+            if (dissociate) {
+                event.preventDefault();
+                var dissociateForm = module.querySelector('.js-form-dissociate');
+                if (dissociateForm) {
+                    dissociateForm.setAttribute('action', dissociate.dataset.action);
+                }
+                showModal('.js-modal-dissociate');
+                return;
+            }
+
+            var metaDelete = event.target.closest('.js-feature-meta-action-delete:not([disabled])');
+            if (metaDelete) {
+                event.preventDefault();
+                var go = true;
+                if (!canQuitPageSafely) {
+                    go = window.confirm('{{ 'The data of the form have been modified, if you continue without having validate your modifications all will be lost. Continue ?'|trans({}, 'featuretype.bo.default') }}');
+                }
+                if (go) {
+                    var deleteForm = module.querySelector('.js-form-delete');
+                    if (deleteForm) {
+                        deleteForm.setAttribute('action', metaDelete.dataset.action);
+                    }
+                    showModal('.js-modal-delete');
+                }
+                return;
+            }
+
+            var del = event.target.closest('.js-action-delete');
+            if (del) {
+                event.preventDefault();
+                var df = module.querySelector('.js-form-delete');
+                if (df) {
+                    df.setAttribute('action', del.dataset.action);
+                }
+                showModal('.js-modal-delete');
+            }
+        });
+
+        // associate: navigate to the selected option's action on submit
+        var associateForm = module.querySelector('.js-form-associate');
+        if (associateForm) {
+            var associateSelect = associateForm.querySelector('select');
+            if (associateSelect) {
+                associateSelect.addEventListener('change', function () {
+                    associateForm.setAttribute('action', this.value);
+                });
+            }
+        }
+    }());
+</script>

@@ -1,0 +1,32 @@
+{% set prefix = 'atuf-' %}
+{% set feature_type_id = feature_type_id|default(form.id.vars.value|default(null)) %}
+
+<form method="POST" class="js-form-edit" action="{{ path('feature_type_update', {id: feature_type_id}) }}">
+    {{ form_widget(form._token) }}
+    {% do form._token.setRendered %}
+    <input type="hidden" name="success_url" value="{{ path('feature_type_view_all') }}" />
+    <input type="hidden" name="{{ form.id.vars.full_name }}" value="{{ form.id.vars.value }}" required />
+    {% do form.id.setRendered %}
+
+    <div class="modal fade js-modal-edit" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <strong class="modal-title text-uppercase">{{ 'Update feature type'|trans({}, 'featuretype.bo.default') }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {% include '@FeatureTypeModule/backOffice/default-twig/feature-type/include/form-generic.html.twig' %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i>
+                        {{ 'Close action'|trans({}, 'featuretype.bo.default') }}
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg"></i>
+                        {{ 'Update action'|trans({}, 'featuretype.bo.default') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

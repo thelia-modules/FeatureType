@@ -1,0 +1,155 @@
+<form action="{{ path('feature_type_meta_update', {feature_id: feature_id}) }}" method="post" class="js-form-meta-update" enctype="multipart/form-data">
+    <input type="hidden" name="_token" value="{{ assignToken() }}" />
+    <input type="hidden" name="feature_type_av_meta-update[success_url]" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
+    <input type="hidden" name="feature_type_av_meta-update[feature_id]" value="{{ feature_id }}" />
+
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            {% for lang in langs %}
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link {{ lang.id == edit_language_id ? 'active' }}" href="#feature-type-meta-{{ lang.locale }}" role="tab" data-bs-toggle="tab">
+                        {{ lang.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content">
+            <br/>
+            {% for lang in langs %}
+                <div role="tabpanel" class="tab-pane {{ lang.id == edit_language_id ? 'active show' }}" id="feature-type-meta-{{ lang.locale }}">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>{{ 'ID'|trans }}</th>
+                            <th>{{ 'Value'|trans }}</th>
+                            {% for featureType in associated_feature_types|filter(ft => ft.has_feature_av_value) %}
+                                <th>
+                                    <span title="({{ featureType.slug }}) {{ featureType.title }}">{{ featureType.slug }}</span>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for feature_av_id, featureAvData in form_meta_data.feature_av %}
+                            <tr>
+                                <td>{{ feature_av_id }}</td>
+                                <td>{{ feature_av_titles[lang.id][feature_av_id] ?? '' }}</td>
+                                {% for featureType in associated_feature_types|filter(ft => ft.has_feature_av_value) %}
+                                    {% set current = featureAvData.lang[lang.id].feature_type[featureType.id] ?? '' %}
+                                    {% set replicate = featureType.is_multilingual_feature_av_value ? 'false' : 'true' %}
+                                    {% set inputName = 'feature_type_av_meta-update[feature_av][' ~ feature_av_id ~ '][lang][' ~ lang.id ~ '][feature_type][' ~ featureType.id ~ ']' %}
+                                    <td>
+                                        {% if featureType.input_type == 'textarea' %}
+                                            <textarea class="form-control {{ featureType.css_class }}"
+                                                      name="{{ inputName }}"
+                                                      data-connector="{{ featureType.slug }}-{{ feature_av_id }}"
+                                                      data-replicate="{{ replicate }}">{{ current }}</textarea>
+                                        {% elseif featureType.input_type == 'boolean' %}
+                                            <select class="form-select {{ featureType.css_class }}"
+                                                    name="{{ inputName }}"
+                                                    data-connector="{{ featureType.slug }}-{{ feature_av_id }}"
+                                                    data-replicate="{{ replicate }}">
+                                                <option value="0" {{ not current ? 'selected' }}>{{ 'No'|trans }}</option>
+                                                <option value="1" {{ current ? 'selected' }}>{{ 'Yes'|trans }}</option>
+                                            </select>
+                                        {% elseif featureType.input_type == 'image' %}
+                                            {% set imageExist = current is not empty %}
+                                            <div>
+                                                <label class="feature_type_av_image_preview" for="{{ featureType.slug }}-{{ feature_av_id }}-{{ lang.id }}-{{ featureType.id }}">
+                                                    {% if not imageExist %}
+                                                        <span id="{{ featureType.slug }}-{{ feature_av_id }}-{{ lang.id }}-{{ featureType.id }}_upload" class="btn btn-success btn-upload">
+                                                            <i class="bi bi-upload"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                    <img id="{{ featureType.slug }}-{{ feature_av_id }}-{{ lang.id }}-{{ featureType.id }}_preview" class="{{ not imageExist ? 'd-none' }}" src="{{ current }}" alt="">
+                                                </label>
+                                                {% if imageExist %}
+                                                    <button id="{{ featureType.slug }}-{{ feature_av_id }}-{{ lang.id }}-{{ featureType.id }}_delete" class="btn btn-danger btn-sm js-feature-meta-action-delete" data-action="{{ path('feature_type_meta_delete', {feature_id: feature_id, feature_type_id: featureType.id, feature_av_id: feature_av_id, lang_id: lang.id, method: '_delete'}) }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                            <input id="{{ featureType.slug }}-{{ feature_av_id }}-{{ lang.id }}-{{ featureType.id }}"
+                                                   type="file"
+                                                   class="form-control {{ featureType.css_class }} d-none"
+                                                   {% if featureType.pattern %}pattern="{{ featureType.pattern }}"{% endif %}
+                                                   name="{{ inputName }}"
+                                                   value="{{ current }}">
+                                        {% else %}
+                                            <input type="{{ featureType.input_type }}"
+                                                   {% if featureType.pattern %}pattern="{{ featureType.pattern }}"{% endif %}
+                                                   class="{{ featureType.input_type != 'color' and featureType.input_type != 'range' ? 'form-control ' }}{{ featureType.css_class }}"
+                                                   {% if featureType.input_type == 'number' or featureType.input_type == 'range' %}
+                                                       min="{{ featureType.min ?? 0 }}"
+                                                       {% if featureType.max %}max="{{ featureType.max }}"{% endif %}
+                                                       step="{{ featureType.step ?? '0.000001' }}"
+                                                   {% endif %}
+                                                   name="{{ inputName }}"
+                                                   value="{{ current }}"
+                                                   data-connector="{{ featureType.slug }}-{{ feature_av_id }}"
+                                                   data-replicate="{{ replicate }}">
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-save"></i>
+            {{ 'Update action'|trans({}, 'featuretype.bo.default') }}
+        </button>
+        <p id="form-meta-update-info" class="alert alert-warning d-none">{{ 'The data of the form have been modified, do not forget to validate these modifications !!!'|trans({}, 'featuretype.bo.default') }}</p>
+    </div>
+</form>
+
+<!-- Modal delete (feature av meta) -->
+<form method="POST" class="js-form-delete" action="">
+    <input type="hidden" name="_token" value="{{ assignToken() }}" />
+    <input type="hidden" name="success_url" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
+
+    <div class="modal fade js-modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <strong class="modal-title text-uppercase">{{ 'Delete feature type value meta'|trans({}, 'featuretype.bo.default') }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ 'Are you sure you want to delete this feature type value meta ?'|trans({}, 'featuretype.bo.default') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i>
+                        {{ 'Close action'|trans({}, 'featuretype.bo.default') }}
+                    </button>
+                    <button type="submit" class="btn btn-danger" value="delete">
+                        <i class="bi bi-check-lg"></i>
+                        {{ 'Delete action'|trans({}, 'featuretype.bo.default') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+    .feature_type_av_image_preview {
+        font-weight: 400;
+        margin-right: 10px;
+    }
+    .feature_type_av_image_preview img {
+        max-height: 30px;
+        max-width: 100px;
+        cursor: pointer;
+    }
+    .feature_type_av_image_preview:hover {
+        box-shadow: 0px 0px 10px 0px #f19834;
+    }
+</style>

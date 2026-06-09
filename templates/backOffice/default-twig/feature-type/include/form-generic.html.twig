@@ -1,0 +1,140 @@
+{% set prefix = prefix|default('atcf-') %}
+
+<div class="modal-body">
+
+    {{ safe_hook('feature-type.form-top', {feature_type_id: feature_type_id}) }}
+
+    {{ form_errors(form) }}
+
+    <div class="mb-3">
+        {{ form_label(form.slug) }}
+        {{ form_widget(form.slug, {attr: {id: prefix ~ 'slug', class: 'form-control', pattern: '[a-z][a-z_0-9]{3,50}', placeholder: 'Enter slug'|trans({}, 'featuretype.bo.default')}}) }}
+        {{ form_errors(form.slug) }}
+        <span class="form-text">{{ 'Must be single, and only numbers, lowercase letters, underscore. Maximum length 50 characters.'|trans({}, 'featuretype.bo.default') }}</span>
+    </div>
+
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            {% for lang in langs %}
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link {{ lang.id == edit_language_id ? 'active' }}" href="#{{ prefix }}feature-type-{{ lang.locale }}" role="tab" data-bs-toggle="tab">
+                        {{ lang.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content">
+            <br/>
+            {% for lang in langs %}
+                <div role="tabpanel" class="tab-pane {{ lang.id == edit_language_id ? 'active show' }}" id="{{ prefix }}feature-type-{{ lang.locale }}">
+                    {% if form.title[lang.id] is defined %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ prefix }}{{ lang.id }}-title">({{ lang.title }}) {{ 'Title'|trans }}</label>
+                            {{ form_widget(form.title[lang.id], {attr: {id: prefix ~ lang.id ~ '-title', class: 'form-control', maxlength: 255, placeholder: 'Enter title'|trans({}, 'featuretype.bo.default')}}) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ prefix }}{{ lang.id }}-description">({{ lang.title }}) {{ 'Description'|trans }}</label>
+                            {{ form_widget(form.description[lang.id], {attr: {id: prefix ~ lang.id ~ '-description', class: 'form-control', rows: 3}}) }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr/>
+    <br/>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="{{ prefix }}has_feature_av_value" name="{{ form.has_feature_av_value.vars.full_name }}" value="1" {{ form.has_feature_av_value.vars.value ? 'checked' }}/>
+                {% do form.has_feature_av_value.setRendered %}
+                <label class="form-check-label" for="{{ prefix }}has_feature_av_value">{{ form.has_feature_av_value.vars.label }}</label>
+                <span class="form-text d-block">{{ 'Activate feature av value'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="{{ prefix }}is_multilingual_feature_av_value" name="{{ form.is_multilingual_feature_av_value.vars.full_name }}" value="1" {{ form.is_multilingual_feature_av_value.vars.value ? 'checked' }}/>
+                {% do form.is_multilingual_feature_av_value.setRendered %}
+                <label class="form-check-label" for="{{ prefix }}is_multilingual_feature_av_value">{{ form.is_multilingual_feature_av_value.vars.label }}</label>
+                <span class="form-text d-block">{{ 'The values will be unique for each language'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+
+        <br/><br/><br/>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.input_type, null, {label_attr: {for: prefix ~ 'input_type'}}) }}
+                {{ form_widget(form.input_type, {attr: {id: prefix ~ 'input_type', class: 'form-select'}}) }}
+                <span class="form-text">{{ 'Input type applied to the input field'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.pattern, null, {label_attr: {for: prefix ~ 'pattern'}}) }}
+                {{ form_widget(form.pattern, {attr: {id: prefix ~ 'pattern', class: 'form-control', maxlength: 255, placeholder: 'Enter pattern'|trans({}, 'featuretype.bo.default')}}) }}
+                <span class="form-text">{{ 'Pattern applied to the input field'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.css_class, null, {label_attr: {for: prefix ~ 'css_class'}}) }}
+                {{ form_widget(form.css_class, {attr: {id: prefix ~ 'css_class', class: 'form-control', pattern: '[a-z][a-z\\-0-9]+', maxlength: 50, placeholder: 'Enter class'|trans({}, 'featuretype.bo.default')}}) }}
+                <span class="form-text">{{ 'Css class applied to the input field'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.min, null, {label_attr: {for: prefix ~ 'min'}}) }}
+                {{ form_widget(form.min, {attr: {id: prefix ~ 'min', class: 'form-control', type: 'number', step: '0.000001'}}) }}
+                <span class="form-text">{{ 'Minimum value applied to the input field'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.max, null, {label_attr: {for: prefix ~ 'max'}}) }}
+                {{ form_widget(form.max, {attr: {id: prefix ~ 'max', class: 'form-control', type: 'number', step: '0.000001'}}) }}
+                <span class="form-text">{{ 'Maximum value applied to the input field'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.step, null, {label_attr: {for: prefix ~ 'step'}}) }}
+                {{ form_widget(form.step, {attr: {id: prefix ~ 'step', class: 'form-control', type: 'number', step: '0.000001'}}) }}
+                <span class="form-text">{{ 'Step applied to the input field'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.image_max_width, null, {label_attr: {for: prefix ~ 'image_max_width'}}) }}
+                {{ form_widget(form.image_max_width, {attr: {id: prefix ~ 'image_max_width', class: 'form-control'}}) }}
+                <span class="form-text">{{ 'Image maximum width in pixels'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.image_max_height, null, {label_attr: {for: prefix ~ 'image_max_height'}}) }}
+                {{ form_widget(form.image_max_height, {attr: {id: prefix ~ 'image_max_height', class: 'form-control'}}) }}
+                <span class="form-text">{{ 'Image maximum height in pixels'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.image_ratio, null, {label_attr: {for: prefix ~ 'image_ratio'}}) }}
+                {{ form_widget(form.image_ratio, {attr: {id: prefix ~ 'image_ratio', class: 'form-control'}}) }}
+                <span class="form-text">{{ 'Image ratio/1, given by width/height (ex 1.77 = equal to 16:9 ratio)'|trans({}, 'featuretype.bo.default') }}</span>
+            </div>
+        </div>
+    </div>
+
+    {{ safe_hook('feature-type.form-bottom', {feature_type_id: feature_type_id}) }}
+
+</div>
