@@ -9,6 +9,7 @@
 namespace FeatureType\Hook;
 
 use FeatureType\Form\FeatureTypeAvMetaUpdateForm;
+use FeatureType\Form\FeatureTypeForm;
 use FeatureType\Model\FeatureFeatureType;
 use FeatureType\Model\FeatureFeatureTypeQuery;
 use FeatureType\Model\FeatureTypeAvMeta;
@@ -132,6 +133,7 @@ class FeatureEditHook extends BaseHook
             'FeatureType/hook/feature-edit-bottom.html.twig',
             [
                 'form' => $form->createView()->getView(),
+                'feature_type_form' => $this->formFactory->createForm(FeatureTypeForm::getName())->createView()->getView(),
                 'feature_id' => $featureId,
                 'form_meta_data' => $data,
                 'associated_feature_types' => $rows,

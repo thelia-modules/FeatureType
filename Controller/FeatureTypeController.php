@@ -124,6 +124,7 @@ class FeatureTypeController extends BaseAdminController
             'edit_language_id' => $this->resolveEditLanguageId(),
             'feature_type_id' => null,
             'create_form' => $createForm->createView()->getView(),
+            'feature_type_form' => $this->createForm(FeatureTypeForm::getName())->createView()->getView(),
             'langs' => $this->buildLangList(),
         ], $params));
     }

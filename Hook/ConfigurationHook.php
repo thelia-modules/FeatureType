@@ -9,6 +9,7 @@
 namespace FeatureType\Hook;
 
 use FeatureType\Form\FeatureTypeCreateForm;
+use FeatureType\Form\FeatureTypeForm;
 use FeatureType\Model\FeatureFeatureTypeQuery;
 use FeatureType\Model\FeatureTypeQuery;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -63,6 +64,7 @@ class ConfigurationHook extends BaseHook
             'edit_language_id' => $this->resolveEditLanguageId(),
             'feature_type_id' => null,
             'create_form' => $createForm->createView()->getView(),
+            'feature_type_form' => $this->formFactory->createForm(FeatureTypeForm::getName())->createView()->getView(),
             'langs' => $this->buildLangList(),
         ]));
     }

@@ -4,7 +4,7 @@
 <form method="POST" class="js-form-create" action="{{ path('feature_type_create') }}">
     {{ form_widget(form._token) }}
     {% do form._token.setRendered %}
-    <input type="hidden" name="success_url" value="{{ path('feature_type_view_all') }}" />
+    <input type="hidden" name="{{ form.vars.full_name }}[success_url]" value="{{ path('feature_type_view_all') }}" />
 
     <div class="modal fade js-modal-create" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">

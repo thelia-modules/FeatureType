@@ -47,8 +47,8 @@
 
                             {% if available_feature_types is not empty %}
                                 <form method="POST" class="js-form-associate" action="">
-                                    <input type="hidden" name="_token" value="{{ assignToken() }}" />
-                                    <input type="hidden" name="success_url" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
+                                    <input type="hidden" name="{{ feature_type_form.vars.full_name }}[_token]" value="{{ feature_type_form._token.vars.value }}" />
+                                    <input type="hidden" name="{{ feature_type_form.vars.full_name }}[success_url]" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
 
                                     <div class="input-group">
                                         <select class="form-select">
@@ -102,8 +102,8 @@
 
     <!-- Modal dissociate -->
     <form method="POST" class="js-form-dissociate" action="">
-        <input type="hidden" name="_token" value="{{ assignToken() }}" />
-        <input type="hidden" name="success_url" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
+        <input type="hidden" name="{{ feature_type_form.vars.full_name }}[_token]" value="{{ feature_type_form._token.vars.value }}" />
+        <input type="hidden" name="{{ feature_type_form.vars.full_name }}[success_url]" value="{{ path('admin.configuration.features.update', {feature_id: feature_id}) }}" />
 
         <div class="modal fade js-modal-dissociate" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
