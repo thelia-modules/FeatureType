@@ -65,8 +65,9 @@ class FeatureEditHook extends BaseHook
 
         $form = $this->formFactory->createForm(FeatureTypeAvMetaUpdateForm::getName(), data: $data);
 
+        $locale = $this->getRequest()?->getLocale() ?? 'en_US';
+
         $featureTypes = FeatureTypeQuery::create()
-            ->setLocale($this->getRequest()->getLocale())
             ->orderById()
             ->find();
 
@@ -81,6 +82,7 @@ class FeatureEditHook extends BaseHook
         $rows = [];
         $availableForSelect = [];
         foreach ($featureTypes as $featureType) {
+            $featureType->setLocale($locale);
             $isAssociated = in_array($featureType->getId(), $associatedFeatureTypeIds, true);
             $info = [
                 'id' => $featureType->getId(),
