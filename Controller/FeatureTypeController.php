@@ -25,6 +25,7 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Translation\Translator;
+use Thelia\Tools\TokenProvider;
 use Thelia\Model\FeatureAvI18n;
 use Thelia\Model\FeatureAvI18nQuery;
 use Thelia\Model\FeatureAvQuery;
@@ -460,11 +461,13 @@ class FeatureTypeController extends BaseAdminController
      * @throws PropelException
      */
     #[Route('/admin/module/feature-type/duplicate/feature/{id}', name: 'featuretype_duplicate', methods: ['POST'])]
-    public function duplicateFeature(int $id, Request $request): Response
+    public function duplicateFeature(int $id, Request $request, TokenProvider $tokenProvider): Response
     {
-        if (null !== $response = $this->checkAuth(array(), 'AttributeType', AccessManager::CREATE)) {
+        if (null !== $response = $this->checkAuth(array(), 'FeatureType', AccessManager::CREATE)) {
             return $response;
         }
+
+        $tokenProvider->checkToken((string) $request->request->get('_token'));
 
         $currentLang = $request->getSession()?->get("thelia.admin.edition.lang")->getLocale();
 
