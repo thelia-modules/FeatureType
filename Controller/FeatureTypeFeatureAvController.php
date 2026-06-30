@@ -305,8 +305,13 @@ class FeatureTypeFeatureAvController extends FeatureTypeController
 
     protected function resetUpdateForm() {
         $this->getParserContext()->remove(FeatureTypeAvMetaUpdateForm::class.':form');
-        $theliaFormErrors = $this->getRequest()->getSession()->get('thelia.form-errors');
+        $request = $this->getRequest();
+        if (null === $request || !$request->hasSession()) {
+            return;
+        }
+        $session = $request->getSession();
+        $theliaFormErrors = $session->get('thelia.form-errors');
         unset($theliaFormErrors[FeatureTypeAvMetaUpdateForm::class.':form']);
-        $this->getRequest()->getSession()->set('thelia.form-errors', $theliaFormErrors);
+        $session->set('thelia.form-errors', $theliaFormErrors);
     }
 }

@@ -469,7 +469,10 @@ class FeatureTypeController extends BaseAdminController
 
         $tokenProvider->checkToken((string) $request->request->get('_token'));
 
-        $currentLang = $request->getSession()?->get("thelia.admin.edition.lang")->getLocale();
+        $editionLang = $request->hasSession() ? $request->getSession()->get("thelia.admin.edition.lang") : null;
+        $currentLang = $editionLang instanceof \Thelia\Model\Lang
+            ? $editionLang->getLocale()
+            : (\Thelia\Model\LangQuery::create()->findOneByByDefault(true)?->getLocale() ?? 'en_US');
 
         try {
             $features = FeatureAvQuery::create()
