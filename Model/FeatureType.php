@@ -322,7 +322,6 @@ class FeatureType extends BaseFeatureType
 
     /**
      * @param Criteria $query
-     * @return $this
      */
     protected static function addJoinFeatureAv(Criteria & $query)
     {
