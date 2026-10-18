@@ -23,7 +23,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Translation\Translator;
-use Thelia\Files\Exception\ProcessFileException;
+use Thelia\Core\File\Exception\ProcessFileException;
 use Thelia\Model\Lang;
 use Thelia\Model\LangQuery;
 

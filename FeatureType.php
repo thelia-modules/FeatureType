@@ -38,7 +38,7 @@ class FeatureType extends BaseModule
     /**
      * @param ConnectionInterface $con
      */
-    public function postActivation(ConnectionInterface $con = null): void
+    public function postActivation(?ConnectionInterface $con = null): void
     {
         if (!self::getConfigValue('is_initialized', false)) {
             $database = new Database($con);
@@ -52,7 +52,7 @@ class FeatureType extends BaseModule
      * @param $newVersion
      * @param ConnectionInterface|null $con
      */
-    public function update($currentVersion, $newVersion, ConnectionInterface $con = null): void
+    public function update($currentVersion, $newVersion, ?ConnectionInterface $con = null): void
     {
         $finder = (new Finder())->files()->name('#.*?\.sql#')->sortByName()->in(self::UPDATE_PATH);
 
@@ -165,7 +165,7 @@ class FeatureType extends BaseModule
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->exclude([__DIR__ . "/I18n/*"])
             ->autowire(true)
             ->autoconfigure(true);
     }
